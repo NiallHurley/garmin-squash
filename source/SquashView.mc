@@ -10,8 +10,6 @@ using Toybox.System as System;
 //! touch a player score button. This implementation
 //! is ugly, and it must be replaced by the button
 //! if it's ever offered in the sdk of older devices
-var player1LocX = 0;
-var player2LocX = 0;
 var heightButton = 0;
 var widthButton = 0;
 
@@ -23,10 +21,6 @@ class SquashView extends Ui.View {
     hidden const VERTICAL_SPACING = 2;
     hidden const EXTRA_VERTICAL_SPACING = 10;
     hidden const HORIZONTAL_SPACING = 6;
-
-    //! Array of 2 buttons containing the player 1 and player 2
-    //! buttons
-    hidden var playerButtons;
 
     //! Value of current heart rate read from sensor
     hidden var heartRate;
@@ -55,13 +49,11 @@ class SquashView extends Ui.View {
     function onLayout(dc) {
         initialY = EXTRA_VERTICAL_SPACING;
         if (System.getDeviceSettings().screenShape == System.SCREEN_SHAPE_ROUND) {
-            initialY += 10;
+            initialY += 20;
         }
 
         heightButton = dc.getFontHeight(Gfx.FONT_TINY) + dc.getFontHeight(Gfx.FONT_NUMBER_MILD) + VERTICAL_SPACING;
         widthButton = (dc.getWidth() / 2) - HORIZONTAL_SPACING;
-        player1LocX = 0;
-        player2LocX = (dc.getWidth() / 2) + HORIZONTAL_SPACING;
     }
 
     //! Called when this View is brought to the foreground. Restore
@@ -84,28 +76,8 @@ class SquashView extends Ui.View {
         var x = dc.getWidth() / 2 - HORIZONTAL_SPACING;
         var y = initialY;
 
-        var gameConfiguration = GameConfiguration.getInstance();
-        if (dataTracker.getServingPlayer() == Player.PLAYER_1) {
-            dc.setColor(Gfx.COLOR_RED, Gfx.COLOR_BLACK);
-        }
-        drawPlayerButton(dc, x, y, gameConfiguration.getPlayer1Name(), dataTracker.getPlayer1Score(), Gfx.TEXT_JUSTIFY_RIGHT);
-        x = dc.getWidth() / 2 + HORIZONTAL_SPACING;
-
-        if (dataTracker.getServingPlayer() == Player.PLAYER_2) {
-            dc.setColor(Gfx.COLOR_RED, Gfx.COLOR_BLACK);
-        }
-
-        drawPlayerButton(dc, x, y, gameConfiguration.getPlayer2Name(), dataTracker.getPlayer2Score(), Gfx.TEXT_JUSTIFY_LEFT);
         x = dc.getWidth() / 2 - HORIZONTAL_SPACING;
-        // Size of label field
-        y = y + dc.getFontHeight(Gfx.FONT_TINY) + VERTICAL_SPACING;
-        // Size of score field
-        y = y + dc.getFontHeight(Gfx.FONT_NUMBER_MILD) + (VERTICAL_SPACING / 2);
-        dc.drawLine(0, y, dc.getWidth(), y);
-        y = y + (VERTICAL_SPACING / 2);
-
-        x = dc.getWidth() / 2 - HORIZONTAL_SPACING;
-        dc.drawText(x, y, Gfx.FONT_TINY, Ui.loadResource(Rez.Strings.steps_label), Gfx.TEXT_JUSTIFY_RIGHT);
+        dc.drawText(x, y, Gfx.FONT_SMALL, Ui.loadResource(Rez.Strings.steps_label), Gfx.TEXT_JUSTIFY_RIGHT);
         x = dc.getWidth() / 2 + HORIZONTAL_SPACING;
         dc.drawText(x, y, Gfx.FONT_TINY, Ui.loadResource(Rez.Strings.hr_label), Gfx.TEXT_JUSTIFY_LEFT);
         y = y + dc.getFontHeight(Gfx.FONT_TINY) + VERTICAL_SPACING;
@@ -132,24 +104,13 @@ class SquashView extends Ui.View {
         dc.drawText(x, y, Gfx.FONT_NUMBER_MILD, dataTracker.getNumberOfCalories(), Gfx.TEXT_JUSTIFY_LEFT);
 
         y = y + dc.getFontHeight(Gfx.FONT_NUMBER_MILD) + (VERTICAL_SPACING / 2);
-        dc.drawLine(0, y, dc.getWidth(), y);
-        y = y + (VERTICAL_SPACING / 2);
+        //dc.drawLine(0, y, dc.getWidth(), y);
+         y = y + (VERTICAL_SPACING / 2);
 
+         // draw vertical line
         x = dc.getWidth() / 2;
-        dc.drawLine(x, VERTICAL_SPACING, x, y);
-    }
-
-    //! Draws nicely Player 1 or 2 buttons, considering if they are
-    //! highlithed or not.
-    //! @param dc       Where to draw it
-    //! @param label    Label that indicates which player it is
-    //! @param score    Score to draw in the button
-    //! @param justify  Text justification (e.g. left, right)
-    hidden function drawPlayerButton(dc, x, y, label, score, justify){
-      	dc.drawText(x, y, Gfx.FONT_TINY, label, justify);
-      	y = y + dc.getFontHeight(Gfx.FONT_TINY) + VERTICAL_SPACING;
-      	dc.drawText(x, y, Gfx.FONT_NUMBER_MILD, score, justify);
-        dc.setColor(Gfx.COLOR_WHITE, Gfx.COLOR_BLACK);
+        //dc.drawLine(x, VERTICAL_SPACING, x, y);
+        dc.drawLine(x, VERTICAL_SPACING, x, dc.getHeight()-(VERTICAL_SPACING / 2)  );
     }
 
     //! Called when this View is removed from the screen. Save the

@@ -27,7 +27,8 @@ class SquashApp extends App.AppBase {
         // not stopped before.
         if (dataTracker.getSession().isRecording()) {
             //TODO: Implement this logic in a more encapsulated way
-            dataTracker.getSession().saveGameScore(dataTracker.getGameScore()[0], dataTracker.getGameScore()[1]);
+            System.println("App onStop - session stop");
+            
             dataTracker.getSession().stop();
         }
         // Let's disable the heart rate sensor

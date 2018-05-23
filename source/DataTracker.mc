@@ -13,14 +13,11 @@ class DataTracker {
     hidden var initialCalories;
     //! Session used to record the activity
     hidden var session;
-    //! Sets tracker
-    hidden var setsTracker;
-    //! Contains who is serving
-    hidden var servingPlayer;
 
     //! Constructor
     function initialize() {
         session = new Session();
+        System.println("Data Tracker initialise");
         restart();
     }
 
@@ -32,13 +29,10 @@ class DataTracker {
         var activityInfo = Act.getInfo();
         initialSteps = activityInfo.steps;
         initialCalories = activityInfo.calories;
-        if (session != null && session.isRecording()) {
-            var gameScore = setsTracker.getGameScore();
-            session.saveGameScore(gameScore[0], gameScore[1]);
+        if (session != null && session.isRecording()) {  
+            System.println("Data Tracker restart - session stop");          
             session.stop();
         }
-        setsTracker = new SetsTracker();
-        servingPlayer = Player.NO_PLAYER;
     }
 
     //! Updates the calculated values taken from
@@ -59,68 +53,9 @@ class DataTracker {
         return numberOfCalories;
     }
 
-    //! Returns the score of player 1
-    function getPlayer1Score() {
-        return setsTracker.getPlayerScore(0);
-    }
-
-    //! Returns the score of player 2
-    function getPlayer2Score() {
-        return setsTracker.getPlayerScore(1);
-    }
-
-    //! Increments by 1 the score of player 1
-    function incrementPlayer1Score() {
-        var wonSet = setsTracker.increaseScore(0);
-
-        if (wonSet) {
-            session.recordSetScore(setsTracker.getPlayerScore(0), setsTracker.getPlayerScore(1));
-            setsTracker.startNewSet();
-        }
-        return wonSet;
-    }
-
-    //! Increments by 1 the score of player 2
-    function incrementPlayer2Score() {
-        var wonSet = setsTracker.increaseScore(1);
-
-        if (wonSet) {
-            session.recordSetScore(setsTracker.getPlayerScore(0), setsTracker.getPlayerScore(1));
-            setsTracker.startNewSet();
-        }
-        return wonSet;
-    }
-
-    //! Get the total game score for both players
-    //! @return array of 2 elements containg the scores
-    function getGameScore(){
-        return setsTracker.getGameScore();
-    }
-
-    //! Returns true if the game is over
-    function isGameOver(){
-        return setsTracker.isGameOver();
-    }
-
-    //! Resets players' score counters
-    function reset() {
-        setsTracker.resetCurrentSet();
-    }
 
     //! Returns the session that records the activity
     function getSession() {
         return session;
     }
-
-    //! Sets the plater that is currently serving
-    //! @param newServingPlayer Should be Player.PLAYER_1, Player.PLAYER_2 or Player.NO_PLAYER
-    function changeServingPlayer(newServingPlayer){
-        servingPlayer = newServingPlayer;
-    }
-
-    //! Returns the current serving player (Player.PLAYER_1, Player.PLAYER_2 or Player.NO_PLAYER)
-    function getServingPlayer() {
-        return servingPlayer;
-    }
-
 }

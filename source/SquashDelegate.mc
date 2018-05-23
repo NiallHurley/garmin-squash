@@ -1,5 +1,6 @@
 using Toybox.WatchUi as Ui;
 using Toybox.Time as Time;
+using Toybox.System;
 
 //! Class that handles events coming from
 //! the Squash View
@@ -21,18 +22,42 @@ class SquashDelegate extends Ui.BehaviorDelegate {
     //! In this view, it should start or stop recording
     //! the session
     function onMenu() {
-        if (dataTracker.getSession().isRecording()) {
+       /* if (dataTracker.getSession().isRecording()) {
             //TODO: Implement this logic in a more encapsulated way
-            dataTracker.getSession().saveGameScore(dataTracker.getGameScore()[0], dataTracker.getGameScore()[1]);
-            dataTracker.getSession().stop();
+            System.println("Delegate onMenu - session stop");
+            //dataTracker.getSession().stop();
         }
         else {
             // Let's set all counters to 0, just in case
-            dataTracker.restart();
             dataTracker.getSession().start();
         }
         Ui.requestUpdate();
-        return true;
+        return true;*/
+    }
+    
+     function onKey(keyEvent) {
+        System.println("Key pressed");
+        var key = null;
+        var keyType = null;
+        key = keyEvent.getKey();
+        keyType = keyEvent.getType();
+        System.println(key);  // e.g. KEY_MENU = 7
+        System.println(keyType); // e.g. PRESS_TYPE_DOWN = 0
+        
+        if (key==Ui.KEY_ENTER){
+            System.println("enter Key pressed");
+             if (dataTracker.getSession().isRecording()) {            
+             Ui.pushView(new Ui.Confirmation("Exit app?"),
+            new ExitConfirmationDelegate(), Ui.SLIDE_LEFT );
+            }
+            else {
+            dataTracker.getSession().start();
+            Ui.requestUpdate();       
+            return true;
+            }
+        
+        }
+            
     }
 
     //! Function called when the reset button of the UI is pressed.
@@ -40,98 +65,19 @@ class SquashDelegate extends Ui.BehaviorDelegate {
         dataTracker.reset();
     }
 
-    //! Function called when the player 1 score button is pressed.
-    function onPlayer1(){
-        if (dataTracker.getSession().isRecording() &&
-            dataTracker.incrementPlayer1Score()) {
-            if (!dataTracker.isGameOver()) {
-                dataTracker.getSession().addLap();
-                Ui.pushView(new WinSetView({:player=>GameConfiguration.getInstance().getPlayer1Name(),
-                                            :gameScore=>dataTracker.getGameScore()}),
-                            new Ui.BehaviorDelegate(), Ui.SLIDE_IMMEDIATE);
-            }
-            else {
-                Ui.pushView(new WinGameView({:player=>GameConfiguration.getInstance().getPlayer1Name(),
-                                :dataTracker=>dataTracker}),
-                            new WinGameDelegate(dataTracker), Ui.SLIDE_IMMEDIATE);
-            }
-            dataTracker.changeServingPlayer(Player.NO_PLAYER);
-        }
-        else {
-            dataTracker.changeServingPlayer(Player.PLAYER_1);
-        }
-    }
-
-    //! Function called when the player 2 score button is pressed.
-    function onPlayer2(){
-        if (dataTracker.getSession().isRecording() &&
-            dataTracker.incrementPlayer2Score()) {
-            if (!dataTracker.isGameOver()) {
-                dataTracker.getSession().addLap();
-                Ui.pushView(new WinSetView({:player=>GameConfiguration.getInstance().getPlayer2Name(),
-                                :gameScore=>dataTracker.getGameScore()}),
-                            new Ui.BehaviorDelegate(), Ui.SLIDE_IMMEDIATE);
-            }
-            else {
-                Ui.pushView(new WinGameView({:player=>GameConfiguration.getInstance().getPlayer2Name(),
-                                :dataTracker=>dataTracker}),
-                            new WinGameDelegate(dataTracker), Ui.SLIDE_IMMEDIATE);
-            }
-            dataTracker.changeServingPlayer(Player.NO_PLAYER);
-        }
-        else {
-            dataTracker.changeServingPlayer(Player.PLAYER_2);
-        }
-    }
 
     //! Function called when user taps a touch screen.
     //! Replacement of Button feature that does not exist
     //! in sdk v1.3.1
-    function onTap(evt)
-    {
-      var x = evt.getCoordinates()[0];
-      var y = evt.getCoordinates()[1];
-        if (isHitting(x,y, player1LocX)) {
-          onPlayer1();
-        }
-        else if (isHitting(x,y, player2LocX)) {
-          onPlayer2();
-        }
-        return true;
-    }
-
-    //! Check if the user is tapping a score button.
-    //! This function uses global variables defined
-    //! in SquashView. This is ugly, and has to be
-    //! improved! But if Garmin starts offering the
-    //! button feature in older devices, this won't be necessary.
-    function isHitting(x, y, xStartPosition) {
-      return (((x > xStartPosition) && (x < (xStartPosition + widthButton))) &&
-          (y < heightButton));
-    }
-
-    //! Event used in non-touchscreen devices to
-    //! increment player 2 score
-    function onNextPage() {
-      if (!System.getDeviceSettings().isTouchScreen) {
-        onPlayer2();
-      }
-    }
-
-    //! Event used in non-soutchscreen devices to
-    //! increment player 1 score
-    function onPreviousPage() {
-      if (!System.getDeviceSettings().isTouchScreen) {
-        onPlayer1();
-      }
+    function onTap(evt) {
     }
 
     //! Event used when back button is pressed.
     //! It shows a confirmation dialig before quitting the App
     function onBack() {
-        Ui.pushView(new Confirmation(Ui.loadResource(Rez.Strings.confirm_exit)),
+        /* Ui.pushView(new Confirmation(Ui.loadResource(Rez.Strings.confirm_exit)),
             new ExitConfirmationDelegate(), Ui.SLIDE_IMMEDIATE);
-        return true;
+        return true;*/
     }
 }
 
@@ -146,7 +92,8 @@ class ExitConfirmationDelegate extends Ui.ConfirmationDelegate {
     //! Event that happens on response of the user.
     //! When the user replies YES, then the App exits.
     function onResponse(response) {
-        if (response == CONFIRM_YES) {
+        if (response == Ui.CONFIRM_YES) {
+        System.println("confirm yes - exiting");
             System.exit();
         }
     }
