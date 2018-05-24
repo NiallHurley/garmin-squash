@@ -16,7 +16,7 @@ class DataTracker {
 
     //! Constructor
     function initialize() {
-        session = new Session();
+        session = new ActivitySession();
         System.println("Data Tracker initialise");
         restart();
     }

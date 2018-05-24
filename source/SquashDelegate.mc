@@ -50,11 +50,11 @@ class SquashDelegate extends Ui.BehaviorDelegate {
              Ui.pushView(new Ui.Confirmation("Exit app?"),
             new ExitConfirmationDelegate(), Ui.SLIDE_LEFT );
             }
-            else {
+         else {
             dataTracker.getSession().start();
             Ui.requestUpdate();       
             return true;
-            }
+         }
         
         }
             

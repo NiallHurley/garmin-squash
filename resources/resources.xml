@@ -6,6 +6,6 @@
         <string id="steps_label">Steps</string>
         <string id="hr_label">HR</string>
         <string id="time_label">Time</string>
-        <string id="calories_label">Calories</string>
+        <string id="calories_label">Cal</string>
     </strings>    
 </resources>

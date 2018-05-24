@@ -20,7 +20,7 @@ class SquashView extends Ui.View {
 
     hidden const VERTICAL_SPACING = 2;
     hidden const EXTRA_VERTICAL_SPACING = 10;
-    hidden const HORIZONTAL_SPACING = 6;
+    hidden const HORIZONTAL_SPACING = 10;
 
     //! Value of current heart rate read from sensor
     hidden var heartRate;
@@ -49,7 +49,7 @@ class SquashView extends Ui.View {
     function onLayout(dc) {
         initialY = EXTRA_VERTICAL_SPACING;
         if (System.getDeviceSettings().screenShape == System.SCREEN_SHAPE_ROUND) {
-            initialY += 20;
+            initialY += 30;
         }
 
         heightButton = dc.getFontHeight(Gfx.FONT_TINY) + dc.getFontHeight(Gfx.FONT_NUMBER_MILD) + VERTICAL_SPACING;

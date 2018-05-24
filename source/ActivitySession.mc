@@ -2,7 +2,7 @@ using Toybox.ActivityRecording as Record;
 using Toybox.FitContributor as Fit;
 
 //! Class used to record an activity
-class Session {
+class ActivitySession {
 
     //! Garmin session object
     hidden var session;
