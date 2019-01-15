@@ -1,4 +1,1 @@
-* right swipe is seen as onBack() (it's used that way in native stuff too. Left swipe is used in native apps to get to the widget loop. 
-* what is 'menu' button? (see Squash Delegate)
-* record.createsession name = squash. how to get strava to get name?
-* activity monitor - set name here?
+﻿﻿[[https://developer.garmin.com/connect-iq/programmers-guide/monkey-c/]]* right swipe is seen as onBack() (it's used that way in native stuff too. Left swipe is used in native apps to get to the widget loop. * what is 'menu' button? (see Squash Delegate)* record.createsession name = squash. how to get strava to get name?* activity monitor - set name here?# clocktimeClocktime - add clock to main viewhttps://developer.garmin.com/downloads/connect-iq/monkey-c/doc/Toybox/System/ClockTime.html

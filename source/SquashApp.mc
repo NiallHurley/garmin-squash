@@ -25,12 +25,11 @@ class SquashApp extends App.AppBase {
     function onStop(state) {
         // Stop the recoding session in case it was
         // not stopped before.
-        if (dataTracker.getSession().isRecording()) {
-            //TODO: Implement this logic in a more encapsulated way
-            System.println("App onStop - session stop");
-            
-            dataTracker.getSession().stop();
-        }
+        System.println("App onStop");
+        
+        // #TODO: move call to saveConfirm here (more appropriate)
+        
+        
         // Let's disable the heart rate sensor
         Snsr.setEnabledSensors([]);
     }

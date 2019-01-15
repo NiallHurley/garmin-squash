@@ -1,3 +1,4 @@
+using Toybox.WatchUi as Ui;
 using Toybox.ActivityRecording as Record;
 using Toybox.FitContributor as Fit;
 
@@ -34,19 +35,51 @@ class ActivitySession {
     //! Stops the current session
     //! If the session was already stopped, nothing happens
     function stop() {
-        if(isRecording()) {
-            session.stop();
+        // ask user for confirmation
+        System.println("Session stopping");     
+        saveConfirm();
+        session.stop();
+    }
+    
+    function endSession(){
+	    sessionStarted = null;
+        session = null;
+         System.println("Session stopped");
+        vibrate();
+    }
+    
+    // called by the save confirm delegate
+    function save(){   
+       if(isRecording()) {
+           System.println("Session save begin....");
             session.save();
-            sessionStarted = null;
-            session = null;
-            System.println("Session stopped");
-            vibrate();
+            //session.endSession();
+           System.println("Session saved.");
+           endSession();
         }
     }
-
+     
+    // Discard the current session
+    function discard() {
+        session.discard();
+        endSession();
+    }
+    
+    function saveConfirm(){
+        System.println("saveConfirm called.");
+    	Ui.pushView(new Ui.Confirmation("Save?"),
+            new SaveConfirmationDelegate(self), Ui.SLIDE_LEFT );
+        System.println("saveConfirm end.");
+        vibrate();
+    }
+    
     //! Returns true if the session is recording
     function isRecording() {
-        return (session != null) && session.isRecording();
+        if (session == null){
+         return false;
+         } else {         
+          return session.isRecording();
+        }
     }
 
     //! Returns a string containing the session's elapsed time
@@ -63,7 +96,6 @@ class ActivitySession {
                 time = Lang.format("$1$:$2$:$3$",
                 [ hrs, min.format("%0.2d"), time_in_seconds.format("%0.2d") ]);
             }
-
             return time;
     }
 
@@ -94,3 +126,4 @@ class ActivitySession {
     }
 
 }
+

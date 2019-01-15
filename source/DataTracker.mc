@@ -1,4 +1,7 @@
 using Toybox.ActivityMonitor as Act;
+using Toybox.WatchUi as Ui;
+using Toybox.System;
+
 
 //! Class that holds the data that has to be
 //! valculated and is displayed in the UI.
@@ -41,6 +44,7 @@ class DataTracker {
         var activityInfo = Act.getInfo();
         numberOfSteps = activityInfo.steps - initialSteps;
         numberOfCalories = activityInfo.calories - initialCalories;
+        saveConfirmOnExit();
     }
 
     //! Returns the number of steps done during the current activity
@@ -53,9 +57,34 @@ class DataTracker {
         return numberOfCalories;
     }
 
-
     //! Returns the session that records the activity
     function getSession() {
         return session;
     }
+    
+    function saveConfirmOnExit(){
+ 		if (exitApp == true){
+ 			self.session.stop();
+ 		}
+        /*
+    
+    	if (exitApp == true){
+    	    //self.session.stop();
+            var saveDialog;	
+        	System.println("ok - start to exit...");
+        	saveDialog = new MyConfirmationView("Save?");
+    		Ui.pushView(saveDialog,
+            	new SaveConfirmationDelegate(), Ui.SLIDE_LEFT );            	
+            if (shouldSave == true){
+            System.println("SD: saving...");
+	        	self.session.save();	                  
+            } else {
+            System.println("SD: not saving...");
+	        	self.session.discard();               
+            }
+            System.println("SD: exiting...");
+            System.exit();	      
+         }*/
+     }
+    
 }
