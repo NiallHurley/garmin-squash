@@ -43,8 +43,7 @@ class DataTracker {
     function update() {
         var activityInfo = Act.getInfo();
         numberOfSteps = activityInfo.steps - initialSteps;
-        numberOfCalories = activityInfo.calories - initialCalories;
-        saveConfirmOnExit();
+        numberOfCalories = activityInfo.calories - initialCalories;        
     }
 
     //! Returns the number of steps done during the current activity
@@ -61,11 +60,4 @@ class DataTracker {
     function getSession() {
         return session;
     }
-    
-    function saveConfirmOnExit(){
- 		if (exitApp == true){
- 			self.session.stop();
- 		}
-     }
-    
 }

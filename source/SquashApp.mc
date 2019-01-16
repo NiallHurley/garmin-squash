@@ -25,13 +25,24 @@ class SquashApp extends App.AppBase {
     function onStop(state) {
         // Stop the recoding session in case it was
         // not stopped before.
+        var dialog;
         System.println("App onStop");
         
-        // #TODO: move call to saveConfirm here (more appropriate)
+        dataTracker.getSession().save();        
         
+        // #TODO: move call to saveConfirm here (more appropriate)
+        /*
+        System.println("saveConfirm called.");
+        dialog = new MyConfirmationView("Save");
+        //Ui.popView(Ui.SLIDE_LEFT);
+    	Ui.pushView(dialog,
+            new SaveConfirmationDelegate(dataTracker.getSession()), Ui.SLIDE_LEFT );
+        System.println("saveConfirm end.");
+        */
         
         // Let's disable the heart rate sensor
         Snsr.setEnabledSensors([]);
+        Ui.popView(Ui.SLIDE_IMMEDIATE);
     }
 
     //! Return the initial view of application

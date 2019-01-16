@@ -72,6 +72,7 @@ class SquashView extends Ui.View {
             dataTracker.update();
         }
         var time = dataTracker.getSession().getElapsedTime();
+        var clockTime = System.getClockTime(); // ClockTime object
 
         var x = dc.getWidth() / 2 - HORIZONTAL_SPACING;
         var y = initialY;
@@ -110,7 +111,16 @@ class SquashView extends Ui.View {
          // draw vertical line
         x = dc.getWidth() / 2;
         //dc.drawLine(x, VERTICAL_SPACING, x, y);
-        dc.drawLine(x, VERTICAL_SPACING, x, dc.getHeight()-(VERTICAL_SPACING / 2)  );
+        dc.drawLine(x, VERTICAL_SPACING, x, (2*dc.getHeight()/3)+(VERTICAL_SPACING / 2)  );
+        
+         y = y + VERTICAL_SPACING;
+        x = (dc.getWidth()/2) ;//HORIZONTAL_SPACING;
+        dc.setColor(Gfx.COLOR_LT_GRAY,Gfx.COLOR_BLACK);
+        dc.drawText(x, y, Gfx.FONT_SMALL, clockTime.hour.format("%02d") + ":" +
+		    clockTime.min.format("%02d") + ":" +
+		    clockTime.sec.format("%02d")
+        , Gfx.TEXT_JUSTIFY_CENTER);
+        
     }
 
     //! Called when this View is removed from the screen. Save the

@@ -37,7 +37,6 @@ class ActivitySession {
     function stop() {
         // ask user for confirmation
         System.println("Session stopping");     
-        saveConfirm();
         session.stop();
     }
     
@@ -46,6 +45,7 @@ class ActivitySession {
         session = null;
          System.println("Session stopped");
         vibrate();
+                Ui.popView(Ui.SLIDE_IMMEDIATE);
     }
     
     // called by the save confirm delegate
@@ -53,7 +53,6 @@ class ActivitySession {
        if(isRecording()) {
            System.println("Session save begin....");
             session.save();
-            //session.endSession();
            System.println("Session saved.");
            endSession();
         }
@@ -63,14 +62,6 @@ class ActivitySession {
     function discard() {
         session.discard();
         endSession();
-    }
-    
-    function saveConfirm(){
-        System.println("saveConfirm called.");
-    	Ui.pushView(new Ui.Confirmation("Save?"),
-            new SaveConfirmationDelegate(self), Ui.SLIDE_LEFT );
-        System.println("saveConfirm end.");
-        vibrate();
     }
     
     //! Returns true if the session is recording

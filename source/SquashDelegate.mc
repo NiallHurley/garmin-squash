@@ -27,6 +27,7 @@ class SquashDelegate extends Ui.BehaviorDelegate {
     //! the session
     function onMenu() {
         System.println("SquashDelegate onMenu");
+        return true;
     }
     
      function onKey(keyEvent) {
@@ -53,10 +54,12 @@ class SquashDelegate extends Ui.BehaviorDelegate {
 		            return true;
 	         }
         }
+        return true;
     }
 
     //! Function called when the reset button of the UI is pressed.
     function onReset() {
+      return true;
     }
 
 
@@ -64,6 +67,7 @@ class SquashDelegate extends Ui.BehaviorDelegate {
     //! Replacement of Button feature that does not exist
     //! in sdk v1.3.1
     function onTap(evt) {
+    	return true;
     }
 
     //! Event used when back button is pressed.
@@ -71,7 +75,6 @@ class SquashDelegate extends Ui.BehaviorDelegate {
     function onBack() {
         System.println("SD: onBack");
         return true;
-        //exitConfirm();
     }
     
     function exitConfirm(){
@@ -80,7 +83,8 @@ class SquashDelegate extends Ui.BehaviorDelegate {
         System.println("SD: exitConfirm called.");
         dialog = new MyConfirmationView("Exit the app");
     	Ui.pushView(dialog,
-            new ExitConfirmationDelegate(), Ui.SLIDE_LEFT );                           
+            new ExitConfirmationDelegate(), Ui.SLIDE_LEFT );            
+        return true;               
     }  
 }
 
@@ -93,6 +97,7 @@ class MyConfirmationView extends Ui.Confirmation{
 		Confirmation.initialize(promptString);
 		self.promptString = promptString;
 		System.println("MyCV: " + self.promptString);
+		return true;
 	}
 
 	function onKey(keyEvent) {
@@ -122,7 +127,8 @@ class ExitConfirmationDelegate extends Ui.ConfirmationDelegate {
     
     function initialize() {
         ConfirmationDelegate.initialize();
-        System.println("ECD: initialise");       
+        System.println("ECD: initialise");      
+        return true; 
     }
 
     //! Event that happens on response of the user.
@@ -132,6 +138,7 @@ class ExitConfirmationDelegate extends Ui.ConfirmationDelegate {
         if (response == Ui.CONFIRM_YES) {
         	System.println("ECD: exit yes");
         	exitApp = true;
+        	System.exit();
          System.println("ECD: line reached");	                  
         } else {
             System.println("ECD: Cancel");       
@@ -139,8 +146,6 @@ class ExitConfirmationDelegate extends Ui.ConfirmationDelegate {
     	return true;	
     }
 }
-
-
 
 class SaveConfirmationDelegate extends Ui.ConfirmationDelegate {
     //! called from Activity session when the session is stopped - asks the user
@@ -151,6 +156,7 @@ class SaveConfirmationDelegate extends Ui.ConfirmationDelegate {
         ConfirmationDelegate.initialize();
         self.activitySession = activitySession;
         System.println("SCD: initialized");
+        return true;
     }
 
     function onResponse(response) {
@@ -164,7 +170,6 @@ class SaveConfirmationDelegate extends Ui.ConfirmationDelegate {
         	self.activitySession.discard();
         	shouldSave = false;
         }
-        System.println("SCD: about to exit.");
-        System.exit();
+        return true;
     }
 }
