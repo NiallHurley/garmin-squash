@@ -20,7 +20,6 @@ class SquashDelegate extends Ui.BehaviorDelegate {
         BehaviorDelegate.initialize();
         self.dataTracker = dataTracker;
         shouldSave = true;
-        
     }
 
     //! Function called when the menu button is pressed
@@ -28,20 +27,10 @@ class SquashDelegate extends Ui.BehaviorDelegate {
     //! the session
     function onMenu() {
         System.println("SquashDelegate onMenu");
-       /* if (dataTracker.getSession().isRecording()) {
-            //TODO: Implement this logic in a more encapsulated way
-            System.println("Delegate onMenu - session stop");
-            //dataTracker.getSession().stop();
-        }
-        else {
-            // Let's set all counters to 0, just in case
-            dataTracker.getSession().start();
-        }
-        Ui.requestUpdate();
-        return true;*/
     }
     
      function onKey(keyEvent) {
+       //! if a key is pressed - print to debug window
         System.println("SD: Key pressed");
         var key = null;
         var keyType = null;
@@ -49,14 +38,12 @@ class SquashDelegate extends Ui.BehaviorDelegate {
         keyType = keyEvent.getType();
         System.println("Key: " + key.toString() + ", keyType: " + keyType.toString());  // e.g. KEY_MENU = 7
         
+        //! if key is the enter key (start/stop button)...
+        //!  ... if recording an activity, prompt for the user to exit
+        //!  ... else start the activity
         if (key==Ui.KEY_ENTER){
             System.println("SD: enter Key pressed");
              if (dataTracker.getSession().isRecording()) {  
-            /* var message = "Continue?";
-			 Ui.pushView(
-				    new Ui.Confirmation(message),
-				    new MyConfirmationDelegate(),
-				    Ui.SLIDE_IMMEDIATE);*/		                                                
                 System.println("SD: calling exitConfirm");
                 exitConfirm();               
             	} else {
@@ -65,13 +52,7 @@ class SquashDelegate extends Ui.BehaviorDelegate {
 		            Ui.requestUpdate();       
 		            return true;
 	         }
-         /*if (exitApp == true){
-			saveConfirm();
-	    }*/
-        
         }
-    	        
-            
     }
 
     //! Function called when the reset button of the UI is pressed.
@@ -89,29 +70,26 @@ class SquashDelegate extends Ui.BehaviorDelegate {
     //! It shows a confirmation dialig before quitting the App
     function onBack() {
         System.println("SD: onBack");
-        /* Ui.pushView(new Confirmation(Ui.loadResource(Rez.Strings.confirm_exit)),
-            new ExitConfirmationDelegate(), Ui.SLIDE_IMMEDIATE);
-        return true;*/
-        exitConfirm();
+        return true;
+        //exitConfirm();
     }
     
     function exitConfirm(){
+    //! confirmation dialog to exit or continue
         var dialog;
         System.println("SD: exitConfirm called.");
-        
         dialog = new MyConfirmationView("Exit the app");
     	Ui.pushView(dialog,
             new ExitConfirmationDelegate(), Ui.SLIDE_LEFT );                           
     }  
-    
 }
 
 class MyConfirmationView extends Ui.Confirmation{
+    //! Generic confirmationView which stores the promptString and logs activity to the console
 	var promptString;
 	
 	function initialize(promptString){
 		System.println("myCV: initialise");
-		//System.println(inputPromptString);
 		Confirmation.initialize(promptString);
 		self.promptString = promptString;
 		System.println("MyCV: " + self.promptString);
@@ -154,28 +132,19 @@ class ExitConfirmationDelegate extends Ui.ConfirmationDelegate {
         if (response == Ui.CONFIRM_YES) {
         	System.println("ECD: exit yes");
         	exitApp = true;
-         //shouldSave = Ui.pushView( new Ui.Confirmation("Save?"), new  SaveConfirmationDelegate(), Ui.SLIDE_RIGHT );  
          System.println("ECD: line reached");	                  
         } else {
             System.println("ECD: Cancel");       
     	}
     	return true;	
     }
-    /* function onBack() {
-        System.println("ECD: onBack");
-        return true;
-     }
-      function onMenu() {
-        System.println("ECD: onMenu");
-        return true;
-     }
-    */
-    
 }
 
 
 
 class SaveConfirmationDelegate extends Ui.ConfirmationDelegate {
+    //! called from Activity session when the session is stopped - asks the user
+    //!  if they would like to save/discard the session data.. then exits (to app.onStop)
 	var activitySession;
     
     function initialize(activitySession) {
@@ -185,12 +154,6 @@ class SaveConfirmationDelegate extends Ui.ConfirmationDelegate {
     }
 
     function onResponse(response) {
-        /*if (response == 0) {
-            System.println("Cancel");
-        } else {
-            System.println("Confirm");
-            System.exit();
-        }*/
         System.println("saveConfirm reached");	        
         if (response == Ui.CONFIRM_YES) {
 	        System.println("SCD: confirm yes - saving");

@@ -66,25 +66,6 @@ class DataTracker {
  		if (exitApp == true){
  			self.session.stop();
  		}
-        /*
-    
-    	if (exitApp == true){
-    	    //self.session.stop();
-            var saveDialog;	
-        	System.println("ok - start to exit...");
-        	saveDialog = new MyConfirmationView("Save?");
-    		Ui.pushView(saveDialog,
-            	new SaveConfirmationDelegate(), Ui.SLIDE_LEFT );            	
-            if (shouldSave == true){
-            System.println("SD: saving...");
-	        	self.session.save();	                  
-            } else {
-            System.println("SD: not saving...");
-	        	self.session.discard();               
-            }
-            System.println("SD: exiting...");
-            System.exit();	      
-         }*/
      }
     
 }
