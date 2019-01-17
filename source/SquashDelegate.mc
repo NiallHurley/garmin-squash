@@ -74,6 +74,10 @@ class SquashDelegate extends Ui.BehaviorDelegate {
     //! It shows a confirmation dialig before quitting the App
     function onBack() {
         System.println("SD: onBack");
+        if (!dataTracker.getSession().isRecording()) {  
+                System.println("SD: calling exitConfirm");
+                exitConfirm();
+                }
         return true;
     }
     
