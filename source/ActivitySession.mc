@@ -9,49 +9,57 @@ class ActivitySession {
     hidden var session;
     //! Time when the session started
     hidden var sessionStarted;
+	// Field ID from resources.
+	const STEPS_FIELD_ID = 1;
+	hidden var mStepsField;
+	hidden var mModel;
+	
 
     //! Constructor
     function initialize() {
-        session = null;
+        session = null;        
+        mModel = Application.getApp().model;
     }
 
     //! Start recording a new session
     //! If the session was already recording, nothing happens
     function start(){
-        System.println("Start");    
-        if(Toybox has :ActivityRecording ) {
-            if(!isRecording()) {
-                   session = Record.createSession({:name=>"Squash", 
-                                                   :sport=>Record.SPORT_TENNIS,
-                                                   :subSport=>Record.SUB_SPORT_MATCH});
-                System.println("Session Created");                                                   
-                session.start();
-                sessionStarted = Time.now();
-                vibrate();
-            }
-        }
+        System.println("Session Start");    
+        if (session==null){
+	        if(Toybox has :ActivityRecording ) {
+	            if(!isRecording()) {
+	                   session = Record.createSession({:name=>"Squash", 
+	                                                   :sport=>Record.SPORT_TENNIS});
+	                System.println("Session Created");
+	                sessionStarted = Time.now(); 	                
+	                mStepsField = session.createField("Steps", STEPS_FIELD_ID, Fit.DATA_TYPE_UINT16, { :mesgType=>Fit.MESG_TYPE_SESSION, :units=>"steps" });
+	            }
+	        }	        
+	    }
+	    session.start();		
+		vibrate();
     }
 
     //! Stops the current session
     //! If the session was already stopped, nothing happens
-    function stop() {
-        // ask user for confirmation
-        System.println("Session stopping");     
+    function stop() {        
+        System.println("Session pausing/stopping");     
         session.stop();
     }
     
     function endSession(){
 	    sessionStarted = null;
         session = null;
-         System.println("Session stopped");
+        System.println("Session stopped");
         vibrate();
-                Ui.popView(Ui.SLIDE_IMMEDIATE);
+        Ui.popView(Ui.SLIDE_IMMEDIATE);
     }
     
     // called by the save confirm delegate
     function save(){   
        if(isRecording()) {
            System.println("Session save begin....");
+           mStepsField.setData(mModel.getNumberOfSteps());
             session.save();
            System.println("Session saved.");
            endSession();
@@ -108,7 +116,6 @@ class ActivitySession {
         }
     }
 
-  
     //! Adds a new lap to the fit file and
     //! sets players' score counters to 0
     //! (new set starts)

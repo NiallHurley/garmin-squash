@@ -1,0 +1,5 @@
+<fitContributions>
+	<fitField id="1" sortOrder = "0" precision="0"
+	displayInActivitySummary="true" dataLabel="@Strings.fitSteps_label"
+	unitLabel="@Strings.fitSteps_units" fillColor="#FF0000" />
+</fitContributions>

@@ -1,6 +1,13 @@
 <strings>
-    <string id="AppName">SquashLite</string>
-
+    <string id="AppName">SquashLite_test</string>
     <string id="heading">Squash counter</string>
-
+	<string id="steps_label">Steps</string>
+	<string id="hr_label">HR</string>
+	<string id="time_label">Time</string>
+	<string id="calories_label">Cal</string>
+	<string id="menu_label_1">Resume</string>
+    <string id="menu_label_2">Save</string>
+    <string id="menu_label_3">Discard</string>
+	<string id="fitSteps_label">Steps</string>        
+	<string id="fitSteps_units">steps</string>
 </strings>
