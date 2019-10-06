@@ -110,7 +110,7 @@ class ActivitySession {
        mStepsFieldCurrent.setData(numStepsToSave);            
     }
     function updateStepDist(stepDist){
-    	mStepDistFieldTotal.setData(stepDist);
+    	mStepDistFieldCurrent.setData(stepDist);
     }
      
     // Discard the current session
