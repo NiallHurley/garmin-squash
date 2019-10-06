@@ -1,5 +1,5 @@
 <strings>
-    <string id="AppName">SquashLite_test</string>
+    <string id="AppName">SquashLite</string>
     <string id="heading">Squash counter</string>
 	<string id="steps_label">Steps</string>
 	<string id="hr_label">HR</string>
