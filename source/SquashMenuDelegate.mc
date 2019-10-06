@@ -26,12 +26,19 @@ class SquashMenuDelegate extends Ui.MenuInputDelegate {
     // Handle the menu input
     function onMenuItem(item) {
         if (item == :resume) {
-            mController.start();
+        	System.println("SMD: menu:resume");
+            mController.start();            
             return true;
         } else if (item == :save) {
+        	System.println("SMD: menu:save");
             mController.save();
             return true;
+        } else if (item == :discard) {
+        	System.println("SMD: menu:discard selected");
+            mController.discard();
+            return true;
         } else {
+        	System.println("SMD: menu:discard");	
             mController.discard();
             return true;
         }

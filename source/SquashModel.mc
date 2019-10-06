@@ -4,11 +4,12 @@ using Toybox.System;
 
 
 //! Class that holds the data that has to be
-//! valculated and is displayed in the UI.
+//! calculated and is displayed in the UI. - 
+//! contains activitySession instance of class which stores session data
 // - formerly known as dataTracker
 class SquashModel {
     //! Number of steps done during the activity
-    hidden var numberOfSteps;
+    var numberOfSteps;
     //! Number of calories burned during the activity
     hidden var numberOfCalories;
     //! Number of steps done when the activity started
@@ -16,31 +17,33 @@ class SquashModel {
     //! Amount of calories burnt until the activity started
     hidden var initialCalories;
     //! Session used to record the activity
-    hidden var session;
+    hidden var activitySession;
+    const stepLength = 1;
 
     //! Constructor
     function initialize() {
-        session = new ActivitySession();
+        activitySession = new ActivitySession();
         System.println("SM: initialise");
         restart();
     }
     
     function start(){
-    	session.start();
+    	activitySession.start();
     }
     
     function stop(){
-    	session.stop();
+    	activitySession.stop();
 	}
 	
 	// Save the current session
     function save() {
-       session.save();
+       System.println("SM: save");
+       activitySession.save();
     }
 
     // Discard the current session
     function discard() {
-        session.discard();
+        activitySession.discard();
     }
 
     //! Restarts all the data field to make it ready
@@ -51,9 +54,9 @@ class SquashModel {
         var activityInfo = Act.getInfo();
         initialSteps = activityInfo.steps;
         initialCalories = activityInfo.calories;
-        if (session != null && session.isRecording()) {  
-            System.println("Session stop");          
-            session.stop();
+        if (activitySession != null && activitySession.isRecording()) {  
+            System.println("Session stop - (activitySession)");          
+            activitySession.stop();
         }
     }
 
@@ -62,11 +65,13 @@ class SquashModel {
     function update() {
         var activityInfo = Act.getInfo();
         numberOfSteps = activityInfo.steps - initialSteps;
-        numberOfCalories = activityInfo.calories - initialCalories;        
+        numberOfCalories = activityInfo.calories - initialCalories;
+        activitySession.updateSteps(numberOfSteps);     
+        activitySession.updateStepDist(numberOfSteps*stepLength);  
     }
 
     //! Returns the number of steps done during the current activity
-    function getNumberOfSteps() {
+    function getNumberOfSteps() {    
         return numberOfSteps;
     }
 
@@ -77,6 +82,6 @@ class SquashModel {
 
     //! Returns the session that records the activity
     function getSession() {
-        return session;
+        return activitySession;
     }
 }

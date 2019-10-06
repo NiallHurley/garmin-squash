@@ -62,7 +62,7 @@ class SquashDelegate extends Ui.BehaviorDelegate {
         var keyType = null;
         key = keyEvent.getKey();
         keyType = keyEvent.getType();
-        System.println("Key: " + key.toString() + ", keyType: " + keyType.toString());  // e.g. KEY_MENU = 7
+        System.println("SD: Key: " + key.toString() + ", keyType: " + keyType.toString());  // e.g. KEY_MENU = 7
         
         //! if key is the enter key (start/stop button)...
         //!  ... if recording an activity, prompt for the user to exit
