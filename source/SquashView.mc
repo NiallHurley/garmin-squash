@@ -1,6 +1,6 @@
 using Toybox.WatchUi as Ui;
 using Toybox.Graphics as Gfx;
-
+using Toybox.Application;
 using Toybox.Sensor as Snsr;
 using Toybox.Time as Time;
 using Toybox.System as System;
@@ -18,15 +18,17 @@ var widthButton = 0;
 //! View
 class SquashView extends Ui.View {
 
+	hidden var mModel;
+    hidden var mController;
+
     hidden const VERTICAL_SPACING = 2;
     hidden const EXTRA_VERTICAL_SPACING = 10;
     hidden const HORIZONTAL_SPACING = 10;
 
     //! Value of current heart rate read from sensor
     hidden var heartRate;
-    //! Object that contains the data that will
-    //! be displayed on screen
-    hidden var dataTracker;
+    
+    hidden var mTimer;
 
     //! Vertical place in the screen where we start
     //! drawing. In round watches we should leave
@@ -34,11 +36,14 @@ class SquashView extends Ui.View {
     hidden var initialY;
 
     //! Constructor
-    //! @param dataTracker Shared objtect that contains
-    //! the data that will be displayed on screen
-    function initialize(dataTracker) {
+    function initialize() {
+       // call superclass initialise
         View.initialize();
-        self.dataTracker = dataTracker;
+        // Get the model and controller from the Application
+        mModel = Application.getApp().model;        
+        mController = Application.getApp().controller;
+                
+        mTimer = new Timer.Timer();
         heartRate = 0;
 
         Snsr.setEnabledSensors( [Snsr.SENSOR_HEARTRATE] );
@@ -60,6 +65,7 @@ class SquashView extends Ui.View {
     //! the state of this View and prepare it to be shown. This includes
     //! loading resources into memory.
     function onShow() {
+    	mTimer.start(method(:onTimer), 1000, true);
     }
 
     //! Update the view
@@ -68,10 +74,10 @@ class SquashView extends Ui.View {
         View.onUpdate(dc);
         dc.setColor(Gfx.COLOR_WHITE, Gfx.COLOR_BLACK);
         dc.setPenWidth(2);
-        if (dataTracker.getSession().isRecording()) {
-            dataTracker.update();
+        if (mModel.getSession().isRecording()) {
+            mModel.update();
         }
-        var time = dataTracker.getSession().getElapsedTime();
+        var time = mModel.getSession().getElapsedTime();
         var clockTime = System.getClockTime(); // ClockTime object
 
         var x = dc.getWidth() / 2 - HORIZONTAL_SPACING;
@@ -83,7 +89,7 @@ class SquashView extends Ui.View {
         dc.drawText(x, y, Gfx.FONT_TINY, Ui.loadResource(Rez.Strings.hr_label), Gfx.TEXT_JUSTIFY_LEFT);
         y = y + dc.getFontHeight(Gfx.FONT_TINY) + VERTICAL_SPACING;
         x = dc.getWidth() / 2 - HORIZONTAL_SPACING;
-        dc.drawText(x, y, Gfx.FONT_NUMBER_MILD, dataTracker.getNumberOfSteps(), Gfx.TEXT_JUSTIFY_RIGHT);
+        dc.drawText(x, y, Gfx.FONT_NUMBER_MILD, mModel.getNumberOfSteps(), Gfx.TEXT_JUSTIFY_RIGHT);
         x = dc.getWidth() / 2 + HORIZONTAL_SPACING;
         dc.drawText(x, y, Gfx.FONT_NUMBER_MILD, heartRate, Gfx.TEXT_JUSTIFY_LEFT);
 
@@ -102,7 +108,7 @@ class SquashView extends Ui.View {
         dc.drawText(x, y, Gfx.FONT_NUMBER_MILD, time, Gfx.TEXT_JUSTIFY_RIGHT);
 
         x = dc.getWidth() / 2 + HORIZONTAL_SPACING;
-        dc.drawText(x, y, Gfx.FONT_NUMBER_MILD, dataTracker.getNumberOfCalories(), Gfx.TEXT_JUSTIFY_LEFT);
+        dc.drawText(x, y, Gfx.FONT_NUMBER_MILD, mModel.getNumberOfCalories(), Gfx.TEXT_JUSTIFY_LEFT);
 
         y = y + dc.getFontHeight(Gfx.FONT_NUMBER_MILD) + (VERTICAL_SPACING / 2);
         //dc.drawLine(0, y, dc.getWidth(), y);
@@ -123,10 +129,16 @@ class SquashView extends Ui.View {
         
     }
 
-    //! Called when this View is removed from the screen. Save the
-    //! state of this View here. This includes freeing resources from
-    //! memory.
+    // Called when this View is removed from the screen. Save the
+    // state of this View here. This includes freeing resources from
+    // memory.
     function onHide() {
+        mTimer.stop();
+    }
+
+    // Handler for the timer callback
+    function onTimer() {
+        Ui.requestUpdate();        
     }
 
     //! Function called to read heart rate sensor value
