@@ -48,10 +48,12 @@ class SquashDelegate extends Ui.BehaviorDelegate {
     function onSelect() {
         // Pass the touchscreen input to the controller
         //mController.onStartStop();
+        System.println("SD: onSelect pressed");
         return true;
 	}
     // Block access to the menu button
     function onMenu() {
+        System.println("SD: Menu pressed");    
         return true;
     }
     
@@ -68,8 +70,15 @@ class SquashDelegate extends Ui.BehaviorDelegate {
         //!  ... if recording an activity, prompt for the user to exit
         //!  ... else start the activity
         if (key==Ui.KEY_ENTER){
+           System.println("SD: enter pressed");   
      	   mController.onStartStop();
+        } else {
+           if (key == 8){
+           		System.println("SD: key8 pressed");   
+     	   		mController.onStartStop();		
+           }
         }
+        
         return true;
     }
     
@@ -83,6 +92,7 @@ class SquashDelegate extends Ui.BehaviorDelegate {
            return true;
        }*/
        // Pass the message through to the system
+       System.println("SD: onBack pressed");   
        return true;
     }
 }
