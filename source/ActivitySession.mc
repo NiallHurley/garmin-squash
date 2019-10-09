@@ -4,7 +4,6 @@ using Toybox.FitContributor as Fit;
 
 //! Class used to record an activity
 class ActivitySession {
-
     //! Garmin session object
     hidden var session;
     //! Time when the session started
@@ -43,9 +42,9 @@ class ActivitySession {
     function endSession(){
 	    sessionStarted = null;
         session = null;
-         System.println("Session stopped");
+        System.println("Session stopped");
         vibrate();
-                Ui.popView(Ui.SLIDE_IMMEDIATE);
+        Ui.popView(Ui.SLIDE_IMMEDIATE);
     }
     
     // called by the save confirm delegate
