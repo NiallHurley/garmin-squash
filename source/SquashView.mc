@@ -1,145 +1,152 @@
+//
+// Copyright 2015-2016 by Garmin Ltd. or its subsidiaries.
+// Subject to Garmin SDK License Agreement and Wearables
+// Application Developer Agreement.
+//
 using Toybox.WatchUi as Ui;
+using Toybox.Application;
+using Toybox.Timer;
+using Toybox.Lang;
 using Toybox.Graphics as Gfx;
 
-using Toybox.Sensor as Snsr;
-using Toybox.Time as Time;
-using Toybox.System as System;
-
-//! These are four global variables used by the
-//! SquashDelegate to determine if the user
-//! touch a player score button. This implementation
-//! is ugly, and it must be replaced by the button
-//! if it's ever offered in the sdk of older devices
-var heightButton = 0;
-var widthButton = 0;
-
-
-//! Class that represents the main Squash App
-//! View
 class SquashView extends Ui.View {
 
-    hidden const VERTICAL_SPACING = 2;
-    hidden const EXTRA_VERTICAL_SPACING = 10;
-    hidden const HORIZONTAL_SPACING = 10;
+    hidden var mModel;    
+    hidden var mController;
+    hidden var mTimer;   
 
-    //! Value of current heart rate read from sensor
-    hidden var heartRate;
-    //! Object that contains the data that will
-    //! be displayed on screen
-    hidden var dataTracker;
+    hidden var mPrompt;
+    hidden var mPromptLabel;
 
-    //! Vertical place in the screen where we start
-    //! drawing. In round watches we should leave
-    //! some initial vertical space.
-    hidden var initialY;
+    hidden var mTimerLabel;
+    hidden var mTimerLabelText;
 
-    //! Constructor
-    //! @param dataTracker Shared objtect that contains
-    //! the data that will be displayed on screen
-    function initialize(dataTracker) {
+    hidden var mClockLabel;
+    hidden var mClockLabelText;
+
+    hidden var mStepsLabel;
+    hidden var mStepsLabelText;
+
+    hidden var mCaloriesLabel;
+    hidden var mCaloriesLabelText;
+
+    hidden var mHRLabel;
+    hidden var mHRLabelText;
+    hidden var heartImage;
+
+    hidden var bitmapImage;
+
+    // Initialize the View
+    function initialize() {
+        // Call the superclass initialize
         View.initialize();
-        self.dataTracker = dataTracker;
-        heartRate = 0;
+        System.println("SquashView initialize");        
+        // Get the model and controller from the Application
+        mModel = Application.getApp().model;
+        mController = Application.getApp().controller;
+        // Initialize the label
+        mTimerLabel = null;
+        mClockLabel = null;
+        mStepsLabel = null;
+        mCaloriesLabel = null;
+        mHRLabel = null;
+        // load the resources
+        mTimerLabelText = Ui.loadResource(Rez.Strings.timer_label);
+        mClockLabelText = Ui.loadResource(Rez.Strings.clock_label);
+        mStepsLabelText = Ui.loadResource(Rez.Strings.steps_label);
+        mCaloriesLabelText = Ui.loadResource(Rez.Strings.calories_label);
+        mHRLabelText = Ui.loadResource(Rez.Strings.heartrate_label);        
+        mPrompt = Ui.loadResource(Rez.Strings.prompt);
+        mTimer = new Timer.Timer();    
 
-        Snsr.setEnabledSensors( [Snsr.SENSOR_HEARTRATE] );
-        Snsr.enableSensorEvents( method(:onSnsr) );
+        bitmapImage = new Ui.Bitmap({
+            :rezId=>Rez.Drawables.bitmap_heart,
+            :locX=>10,
+            :locY=>30
+        });
     }
 
-    //! Load resources
+    // Load your resources here
     function onLayout(dc) {
-        initialY = EXTRA_VERTICAL_SPACING;
-        if (System.getDeviceSettings().screenShape == System.SCREEN_SHAPE_ROUND) {
-            initialY += 30;
+        System.println("SquashView onLayout");
+        // Load the layout from the resource file
+        setLayout(Rez.Layouts.MainLayout(dc));
+        // Cache the label away
+        mPromptLabel = View.findDrawableById("PromptLabel");
+        mTimerLabel = View.findDrawableById("TimerLabel");
+        mStepsLabel = View.findDrawableById("StepsLabel");
+        mCaloriesLabel = View.findDrawableById("CaloriesLabel");
+        mHRLabel = View.findDrawableById("HRLabel");
+        mClockLabel = View.findDrawableById("ClockLabel");
+        
+        heartImage =  Ui.loadResource(Rez.Drawables.bitmap_heart); 
+    }
+
+    // Called when this View is brought to the foreground. Restore
+    // the state of this View and prepare it to be shown. This includes
+    // loading resources into memory.
+    function onShow() {
+        System.println("SquashView onShow");
+        mTimer.start(method(:onTimer), 1000, true);
+    }
+
+    // Update the view - this is called about once a second (see :onShow)
+    function onUpdate(dc) {
+        //System.println("SquashView onUpdate");
+        // If we are running, show a running clock
+        if(mController.isRunning() ) {
+            // Elapsed  time
+            var time = mController.getTime();        
+            var timeString = Lang.format("$1$:$2$", [time / 60, (time % 60).format("%02d")]);
+            mTimerLabel.setText(mTimerLabelText+timeString);
+    
+            // Clock Time
+            var clockTime = System.getClockTime(); // ClockTime object  
+            var clockTimeString = clockTime.hour.format("%02d")+":"+clockTime.min.format("%02d")+":"+clockTime.sec.format("%02d");
+            mClockLabel.setText(mClockLabelText+clockTimeString);
+            mClockLabel.setColor(Gfx.COLOR_LT_GRAY);
+            
+            // Steps
+            var steps = mController.getSteps();
+            mStepsLabel.setText(mStepsLabelText+(steps).toString());
+
+            // Calories
+            var calories = mController.getCalories();
+            mCaloriesLabel.setText(mCaloriesLabelText+(calories).toString());
+
+            // HR            
+            var heartRate = mController.getHR();
+            mHRLabel.setText(mHRLabelText + heartRate.toString());
+            dc.drawBitmap(dc.getWidth() / 2, dc.getHeight() / 2, heartImage);
+            bitmapImage.draw(dc);
+
+            mPromptLabel.setText("");
+        } else {
+            mPromptLabel.setText(mPrompt);
+            mTimerLabel.setText("");
+            mStepsLabel.setText("");
+            mCaloriesLabel.setText("");
+            mClockLabel.setText("");    
+            mHRLabel.setText("");             
         }
 
-        heightButton = dc.getFontHeight(Gfx.FONT_TINY) + dc.getFontHeight(Gfx.FONT_NUMBER_MILD) + VERTICAL_SPACING;
-        widthButton = (dc.getWidth() / 2) - HORIZONTAL_SPACING;
-    }
-
-    //! Called when this View is brought to the foreground. Restore
-    //! the state of this View and prepare it to be shown. This includes
-    //! loading resources into memory.
-    function onShow() {
-    }
-
-    //! Update the view
-    function onUpdate(dc) {
         // Call the parent onUpdate function to redraw the layout
         View.onUpdate(dc);
-        dc.setColor(Gfx.COLOR_WHITE, Gfx.COLOR_BLACK);
-        dc.setPenWidth(2);
-        if (dataTracker.getSession().isRecording()) {
-            dataTracker.update();
-        }
-        var time = dataTracker.getSession().getElapsedTime();
-        var clockTime = System.getClockTime(); // ClockTime object
-
-        var x = dc.getWidth() / 2 - HORIZONTAL_SPACING;
-        var y = initialY;
-
-        x = dc.getWidth() / 2 - HORIZONTAL_SPACING;
-        dc.drawText(x, y, Gfx.FONT_SMALL, Ui.loadResource(Rez.Strings.steps_label), Gfx.TEXT_JUSTIFY_RIGHT);
-        x = dc.getWidth() / 2 + HORIZONTAL_SPACING;
-        dc.drawText(x, y, Gfx.FONT_TINY, Ui.loadResource(Rez.Strings.hr_label), Gfx.TEXT_JUSTIFY_LEFT);
-        y = y + dc.getFontHeight(Gfx.FONT_TINY) + VERTICAL_SPACING;
-        x = dc.getWidth() / 2 - HORIZONTAL_SPACING;
-        dc.drawText(x, y, Gfx.FONT_NUMBER_MILD, dataTracker.getNumberOfSteps(), Gfx.TEXT_JUSTIFY_RIGHT);
-        x = dc.getWidth() / 2 + HORIZONTAL_SPACING;
-        dc.drawText(x, y, Gfx.FONT_NUMBER_MILD, heartRate, Gfx.TEXT_JUSTIFY_LEFT);
-
-        y = y + dc.getFontHeight(Gfx.FONT_NUMBER_MILD) + (VERTICAL_SPACING / 2);
-        dc.drawLine(0, y, dc.getWidth(), y);
-        y = y + (VERTICAL_SPACING / 2);
-
-        x = dc.getWidth() / 2 - HORIZONTAL_SPACING;
-        dc.drawText(x, y, Gfx.FONT_TINY, Ui.loadResource(Rez.Strings.time_label), Gfx.TEXT_JUSTIFY_RIGHT);
-
-        x = dc.getWidth() / 2 + HORIZONTAL_SPACING;
-        dc.drawText(x, y, Gfx.FONT_TINY, Ui.loadResource(Rez.Strings.calories_label), Gfx.TEXT_JUSTIFY_LEFT);
-
-        y = y + dc.getFontHeight(Gfx.FONT_TINY) + VERTICAL_SPACING;
-        x = dc.getWidth() / 2 - HORIZONTAL_SPACING;
-        dc.drawText(x, y, Gfx.FONT_NUMBER_MILD, time, Gfx.TEXT_JUSTIFY_RIGHT);
-
-        x = dc.getWidth() / 2 + HORIZONTAL_SPACING;
-        dc.drawText(x, y, Gfx.FONT_NUMBER_MILD, dataTracker.getNumberOfCalories(), Gfx.TEXT_JUSTIFY_LEFT);
-
-        y = y + dc.getFontHeight(Gfx.FONT_NUMBER_MILD) + (VERTICAL_SPACING / 2);
-        //dc.drawLine(0, y, dc.getWidth(), y);
-         y = y + (VERTICAL_SPACING / 2);
-
-         // draw vertical line
-        x = dc.getWidth() / 2;
-        //dc.drawLine(x, VERTICAL_SPACING, x, y);
-        dc.drawLine(x, VERTICAL_SPACING, x, (2*dc.getHeight()/3)+(VERTICAL_SPACING / 2)  );
-        
-         y = y + VERTICAL_SPACING;
-        x = (dc.getWidth()/2) ;//HORIZONTAL_SPACING;
-        dc.setColor(Gfx.COLOR_LT_GRAY,Gfx.COLOR_BLACK);
-        dc.drawText(x, y, Gfx.FONT_SMALL, clockTime.hour.format("%02d") + ":" +
-		    clockTime.min.format("%02d") + ":" +
-		    clockTime.sec.format("%02d")
-        , Gfx.TEXT_JUSTIFY_CENTER);
-        
     }
 
-    //! Called when this View is removed from the screen. Save the
-    //! state of this View here. This includes freeing resources from
-    //! memory.
+    // Called when this View is removed from the screen. Save the
+    // state of this View here. This includes freeing resources from
+    // memory.
     function onHide() {
+        System.println("SquashView onHide");
+        return true;
+        //mTimer.stop();        
     }
 
-    //! Function called to read heart rate sensor value
-    function onSnsr(sensor_info)
-    {
-        if( sensor_info.heartRate != null )
-        {
-            heartRate = sensor_info.heartRate.toString();
-        }
-        else
-        {
-            heartRate = "---";
-        }
-        Ui.requestUpdate();
-    }
+    // Handler for the timer callback
+    function onTimer() {
+        //System.println("SquashView onTimer");
+        Ui.requestUpdate();        
+    }    
+
 }

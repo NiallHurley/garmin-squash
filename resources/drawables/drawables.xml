@@ -1,5 +1,4 @@
 <drawables>
     <bitmap id="LauncherIcon" filename="launcher_icon.png" />
-    <bitmap id="buttonResetDefault" filename="reset_default.png" />
-    <bitmap id="buttonResetSelected" filename="reset_selected.png" />
+    <bitmap id="bitmap_heart" filename="heart.png"/>
 </drawables>
