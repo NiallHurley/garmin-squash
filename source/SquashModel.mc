@@ -136,31 +136,7 @@ class SquashModel {
             System.println(time);
             return time;
     }
-
-    //! Performs a vibration. Used as feedback to the user
-    //! for starting and stopping recording the session
-    /*function vibrate() {
-        if (Attention has :vibrate) {
-            var vibrateData = [
-                    new Attention.VibeProfile(  25, 100 ),
-                    new Attention.VibeProfile(  50, 100 ),
-                    new Attention.VibeProfile(  75, 100 ),
-                    new Attention.VibeProfile( 100, 100 ),
-                    new Attention.VibeProfile(  75, 100 ),
-                    new Attention.VibeProfile(  50, 100 ),
-                    new Attention.VibeProfile(  25, 100 )
-                  ];
-
-            Attention.vibrate(vibrateData);
-        }
-    }*/
-  
-    //! Adds a new lap to the fit file and
-    //! sets players' score counters to 0
-    //! (new set starts)
-    function addLap() {
-        session.addLap();
-    }    
+   
 
     //! Returns the number of steps done during the current activity
     function getNumberOfSteps() {
