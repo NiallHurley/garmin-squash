@@ -27,9 +27,6 @@ class SquashView extends Ui.View {
     hidden var mStepsLabel;
     hidden var mStepsLabelText;
 
-    hidden var mCaloriesLabel;
-    hidden var mCaloriesLabelText;
-
     hidden var mHRLabel;
     hidden var mHRLabelText;
     hidden var heartImage;
@@ -48,13 +45,11 @@ class SquashView extends Ui.View {
         mTimerLabel = null;
         mClockLabel = null;
         mStepsLabel = null;
-        mCaloriesLabel = null;
         mHRLabel = null;
         // load the resources
         mTimerLabelText = Ui.loadResource(Rez.Strings.timer_label);
         mClockLabelText = Ui.loadResource(Rez.Strings.clock_label);
         mStepsLabelText = Ui.loadResource(Rez.Strings.steps_label);
-        mCaloriesLabelText = Ui.loadResource(Rez.Strings.calories_label);
         mHRLabelText = Ui.loadResource(Rez.Strings.heartrate_label);        
         mPrompt = Ui.loadResource(Rez.Strings.prompt);
         mTimer = new Timer.Timer();    
@@ -75,7 +70,6 @@ class SquashView extends Ui.View {
         mPromptLabel = View.findDrawableById("PromptLabel");
         mTimerLabel = View.findDrawableById("TimerLabel");
         mStepsLabel = View.findDrawableById("StepsLabel");
-        mCaloriesLabel = View.findDrawableById("CaloriesLabel");
         mHRLabel = View.findDrawableById("HRLabel");
         mClockLabel = View.findDrawableById("ClockLabel");
         
@@ -110,10 +104,6 @@ class SquashView extends Ui.View {
             var steps = mController.getSteps();
             mStepsLabel.setText(mStepsLabelText+(steps).toString());
 
-            // Calories
-            var calories = mController.getCalories();
-            mCaloriesLabel.setText(mCaloriesLabelText+(calories).toString());
-
             // HR            
             var heartRate = mController.getHR();
             mHRLabel.setText(mHRLabelText + heartRate.toString());
@@ -125,7 +115,6 @@ class SquashView extends Ui.View {
             mPromptLabel.setText(mPrompt);
             mTimerLabel.setText("");
             mStepsLabel.setText("");
-            mCaloriesLabel.setText("");
             mClockLabel.setText("");    
             mHRLabel.setText("");             
         }

@@ -145,13 +145,6 @@ class SquashModel {
         return numberOfSteps;
     }
 
-    //! Returns the number of calories burnt during the current activity
-    function getNumberOfCalories(){
-        var activityInfo = Act.getInfo();        
-        numberOfCalories = activityInfo.calories - initialCalories;
-        return numberOfCalories;
-    }
-
     function getHeartRate(){
         return heartRate;
     }

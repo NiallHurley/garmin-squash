@@ -89,9 +89,6 @@ class SquashController
         return squashModel.getNumberOfSteps();
     }
 
-    function getCalories(){
-        return squashModel.getNumberOfCalories();
-    }
     function getHR(){
         return squashModel.getHeartRate();
     }
