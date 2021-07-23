@@ -53,29 +53,13 @@ class SquashDelegate extends Ui.BehaviorDelegate {
     }
 
     function onKey(keyEvent) {
-       //! if a key is pressed - print to debug window
+       //! if a key is pressed - print to debug window and block call
         System.println("SD: Key pressed");
         var key = null;
         var keyType = null;
         key = keyEvent.getKey();
         keyType = keyEvent.getType();
-        System.println("Key: " + key.toString() + ", keyType: " + keyType.toString());  // e.g. KEY_MENU = 7
-        
-        //! if key is the enter key (start/stop button)...
-        //!  ... if recording an activity, prompt for the user to exit
-        //!  ... else start the activity
-        if (key==Ui.KEY_ENTER){
-            System.println("SD: enter Key pressed");
-             if (squashController.isRunning()) {  
-                System.println("SD: isRunning");
-               // exitConfirm();               
-            	} else {
-	            	System.println("SD: not isRunning");
-		           // dataTracker.getSession().start();
-		            Ui.requestUpdate();       
-		            return true;
-	         }
-        }
+        System.println("Key: " + key.toString() + ", keyType: " + keyType.toString());  // e.g. KEY_MENU = 7                
         return true;
     }
     

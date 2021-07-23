@@ -1,1 +1,19 @@
-﻿﻿﻿﻿[[https://developer.garmin.com/connect-iq/programmers-guide/monkey-c/]]* right swipe is seen as onBack() (it's used that way in native stuff too. Left swipe is used in native apps to get to the widget loop. * what is 'menu' button? (see Squash Delegate)* record.createsession name = squash. how to get strava to get name?* activity monitor - set name here?# clocktimeClocktime - add clock to main viewhttps://developer.garmin.com/downloads/connect-iq/monkey-c/doc/Toybox/System/ClockTime.html# too many timers error - that a thing in this version?### links* [[https://chariotsolutions.com/blog/post/how-to-make-a-watch-face-for-garmin-watches/]]
+﻿﻿﻿﻿[[https://developer.garmin.com/connect-iq/programmers-guide/monkey-c/]]
+
+* right swipe is seen as onBack() (it's used that way in native stuff too. Left swipe is used in native apps to get to the widget loop. 
+* what is 'menu' button? (see Squash Delegate)
+* record.createsession name = squash. how to get strava to get name?
+* activity monitor - set name here?
+
+# clocktime
+Clocktime - add clock to main view
+
+https://developer.garmin.com/downloads/connect-iq/monkey-c/doc/Toybox/System/ClockTime.html
+
+# too many timers error - that a thing in this version?
+
+### links
+
+* [[https://chariotsolutions.com/blog/post/how-to-make-a-watch-face-for-garmin-watches/]]
+
+* [[https://www.peteravdjian.com/posts/2021/03/20/ciq-development-with-vscode/]]

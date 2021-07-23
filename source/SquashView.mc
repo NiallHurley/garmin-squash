@@ -103,6 +103,7 @@ class SquashView extends Ui.View {
             // Steps
             var steps = mController.getSteps();
             mStepsLabel.setText(mStepsLabelText+(steps).toString());
+            mStepsLabel.setColor(Gfx.COLOR_LT_GRAY);
 
             // HR            
             var heartRate = mController.getHR();
