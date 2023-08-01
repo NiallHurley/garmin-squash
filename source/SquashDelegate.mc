@@ -34,7 +34,7 @@ class SquashDelegate extends Ui.BehaviorDelegate {
     // block access to onHide (swipe from L to R)
     function onHide() {
         System.println("SquashDelegate onHide");
-        return true;
+        // return true;
     }
     
     // Input handling of start/stop is mapped to onSelect
@@ -42,7 +42,7 @@ class SquashDelegate extends Ui.BehaviorDelegate {
         // Pass the input to the controller
         System.println("SquashDelegate onSelect");
         squashController.onStartStop();
-        return true;
+        // return true;
     }
 
     

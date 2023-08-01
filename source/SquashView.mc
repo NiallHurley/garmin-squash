@@ -129,7 +129,7 @@ class SquashView extends Ui.View {
     // memory.
     function onHide() {
         System.println("SquashView onHide");
-        return true;
+        // return true;
         //mTimer.stop();        
     }
 

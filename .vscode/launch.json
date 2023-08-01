@@ -6,6 +6,13 @@
     "configurations": [
         {
             "type": "monkeyc",
+            "request": "launch",
+            "name": "Run App",
+            "stopAtLaunch": false,
+            "device": "${command:GetTargetDevice}"
+        },
+        {
+            "type": "monkeyc",
             "request": "runApp",
             "name": "Run App",
             "device": "${command:GetTargetDevice}"

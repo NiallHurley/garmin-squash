@@ -70,9 +70,9 @@ class SquashModel {
     //! If the session was already recording, nothing happens
     function start(){
         System.println("SquashModel start");    
-        session = Record.createSession({:name=>"Squash", 
-                                        :sport=>Record.SPORT_TRAINING,
-                                        :subSport=>Record.SUB_SPORT_CARDIO_TRAINING});
+        session = Record.createSession({:name=>"Squash",
+                                        :sport=>Activity.SPORT_RACKET,
+                                        :subSport=>Activity.SUB_SPORT_SQUASH});
         System.println("Session Created");                                                   
         session.start();
         sessionStarted = Time.now();

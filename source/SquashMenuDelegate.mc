@@ -29,17 +29,17 @@ class SquashMenuDelegate extends Ui.MenuInputDelegate {
         if (item == :resume) {
             System.println("SquashMenuDelegate resume");        
             mController.resume();
-            return true;
+            // return true;
         } else if (item == :save) {
             System.println("SquashMenuDelegate save");        
             mController.save();
-            return true;
+            // return true;
         } else {
             System.println("SquashMenuDelegate discard");        
             mController.discard();
-            return true;
+            // return true;
         }
-        return false;
+        // return false;
     }
 
 
