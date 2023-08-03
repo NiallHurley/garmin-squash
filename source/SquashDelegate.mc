@@ -54,7 +54,7 @@ class SquashDelegate extends Ui.BehaviorDelegate {
 
     function onKey(keyEvent) {
        //! if a key is pressed - print to debug window and block call
-        System.println("SD: Key pressed");
+        System.println("SquashDelegate: Key pressed");
         var key = null;
         var keyType = null;
         key = keyEvent.getKey();
