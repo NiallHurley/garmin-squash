@@ -22,7 +22,7 @@ class SquashMenuDelegate extends Ui.MenuInputDelegate {
         mController = Application.getApp().controller;
         System.println("SquashMenuDelegate initialize");        
     }
-
+ 
     // Handle the menu input
     function onMenuItem(item) {
         System.println("SquashMenuDelegate onMenuItem");        

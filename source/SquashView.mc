@@ -32,6 +32,7 @@ class SquashView extends Ui.View {
     hidden var heartImage;
 
     hidden var bitmapImage;
+    hidden var show;
 
     // Initialize the View
     function initialize() {
@@ -46,6 +47,7 @@ class SquashView extends Ui.View {
         mClockLabel = null;
         mStepsLabel = null;
         mHRLabel = null;
+    
         // load the resources
         mTimerLabelText = Ui.loadResource(Rez.Strings.timer_label);
         mClockLabelText = Ui.loadResource(Rez.Strings.clock_label);
@@ -59,6 +61,7 @@ class SquashView extends Ui.View {
             :locX=>10,
             :locY=>30
         });
+        show = true;
     }
 
     // Load your resources here
@@ -81,6 +84,7 @@ class SquashView extends Ui.View {
     // loading resources into memory.
     function onShow() {
         System.println("SquashView onShow");
+        show = true;
         mTimer.start(method(:onTimer), 1000, true);
     }
 
@@ -89,29 +93,31 @@ class SquashView extends Ui.View {
         //System.println("SquashView onUpdate");
         // If we are running, show a running clock
         if(mController.isRunning() ) {
-            // Elapsed  time
-            var time = mController.getTime();        
-            var timeString = Lang.format("$1$:$2$", [time / 60, (time % 60).format("%02d")]);
-            mTimerLabel.setText(mTimerLabelText+timeString);
-    
-            // Clock Time
-            var clockTime = System.getClockTime(); // ClockTime object  
-            var clockTimeString = clockTime.hour.format("%02d")+":"+clockTime.min.format("%02d")+":"+clockTime.sec.format("%02d");
-            mClockLabel.setText(mClockLabelText+clockTimeString);
-            mClockLabel.setColor(Gfx.COLOR_LT_GRAY);
-            
-            // Steps
-            var steps = mController.getSteps();
-            mStepsLabel.setText(mStepsLabelText+(steps).toString());
-            mStepsLabel.setColor(Gfx.COLOR_LT_GRAY);
+            if (show){
+                // Elapsed  time
+                var time = mController.getTime();        
+                var timeString = Lang.format("$1$:$2$", [time / 60, (time % 60).format("%02d")]);
+                mTimerLabel.setText(mTimerLabelText+timeString);
+        
+                // Clock Time
+                var clockTime = System.getClockTime(); // ClockTime object  
+                var clockTimeString = clockTime.hour.format("%02d")+":"+clockTime.min.format("%02d")+":"+clockTime.sec.format("%02d");
+                mClockLabel.setText(mClockLabelText+clockTimeString);
+                mClockLabel.setColor(Gfx.COLOR_LT_GRAY);
+                
+                // Steps
+                var steps = mController.getSteps();
+                mStepsLabel.setText(mStepsLabelText+(steps).toString());
+                mStepsLabel.setColor(Gfx.COLOR_LT_GRAY);
 
-            // HR            
-            var heartRate = mController.getHR();
-            mHRLabel.setText(mHRLabelText + heartRate.toString());
-            dc.drawBitmap(dc.getWidth() / 2, dc.getHeight() / 2, heartImage);
-            bitmapImage.draw(dc);
+                // HR            
+                var heartRate = mController.getHR();
+                mHRLabel.setText(mHRLabelText + heartRate.toString());
+                dc.drawBitmap(dc.getWidth() / 2, dc.getHeight() / 2, heartImage);
+                bitmapImage.draw(dc);
 
-            mPromptLabel.setText("");
+                mPromptLabel.setText("");
+            }
         } else {
             mPromptLabel.setText(mPrompt);
             mTimerLabel.setText("");
@@ -129,6 +135,7 @@ class SquashView extends Ui.View {
     // memory.
     function onHide() {
         System.println("SquashView onHide");
+        show = false;
         // return true;
         //mTimer.stop();        
     }
