@@ -1,7 +1,7 @@
 <strings>
     <string id="AppName">Squash Lite</string>
 
-    <string id="prompt">Tap screen \nto Begin</string>
+    <string id="prompt">Ready \nto begin?</string>
 
     <string id="menu_label_1">Resume</string>
     <string id="menu_label_2">Save</string>

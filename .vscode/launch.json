@@ -19,9 +19,10 @@
         },
         {
             "type": "monkeyc",
-            "request": "runApp",
-            "name": "Run App",
-            "device": "${command:GetTargetDevice}"
+            "request": "launch",
+            "name": "Run App (fenix)",
+            "stopAtLaunch": false,
+            "device": "fenix"
         },
         {
             "type": "monkeyc",
