@@ -71,8 +71,8 @@ class SquashModel {
     function start(){
         System.println("SquashModel start");    
         session = Record.createSession({:name=>"Squash",
-                                        :sport=>Activity.SPORT_RACKET,
-                                        :subSport=>Activity.SUB_SPORT_SQUASH});
+                                        :sport=>Record.SPORT_TRAINING,
+                                        :subSport=>Record.SUB_SPORT_CARDIO_TRAINING});
         System.println("Session Created");                                                   
         session.start();
         sessionStarted = Time.now();
