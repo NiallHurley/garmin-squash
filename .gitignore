@@ -3,3 +3,6 @@ images/
 *.lnk
 output/GarminSquashApp.iq
 /output/
+developer_key
+.gitignore
+build/*
