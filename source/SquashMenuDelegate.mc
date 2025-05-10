@@ -23,26 +23,59 @@ class SquashMenuDelegate extends Ui.MenuInputDelegate {
         System.println("SMD: init");
     }
 
+    function onTap(event) {
+        var deviceSettings = System.getDeviceSettings();
+        if (deviceSettings.inputButtons == 0) {
+            System.println("SMD: tap accepted (touchscreen-only device)");
+            return false; // allow tap to propagate
+        } else {
+            System.println("SMD: tap ignored (physical buttons available)");
+            return true; // suppress tap
+        }
+    }
+
     // Handle the menu input
     function onMenuItem(item) {
         if (item == :resume) {
         	System.println("SMD: menu:resume");
             mController.start();            
-            return true;
+            return;
         } else if (item == :save) {
-        	System.println("SMD: menu:save");
+            System.println("SMD: menu:save");
             mController.save();
-            return true;
+            if (mDeathTimer != null) {
+                mDeathTimer.stop();
+                mDeathTimer = null;
+            }
+            mDeathTimer = new Timer.Timer();
+            var exitFn = mController.method(:onExit);
+            if (exitFn != null) {
+                mDeathTimer.start(exitFn, 3000, false);
+            } else {
+                System.println("SMD: onExit method not found on controller");
+            }
+            return;
         } else if (item == :discard) {
-        	System.println("SMD: menu:discard selected");
+            System.println("SMD: menu:discard selected");
             mController.discard();
-            return true;
+            if (mDeathTimer != null) {
+                mDeathTimer.stop();
+                mDeathTimer = null;
+            }
+            mDeathTimer = new Timer.Timer();
+            var exitFn = mController.method(:onExit);
+            if (exitFn != null) {
+                mDeathTimer.start(exitFn, 3000, false);
+            } else {
+                System.println("SMD: onExit method not found on controller");
+            }
+            return;
         } else {
         	System.println("SMD: menu:discard");	
             mController.discard();
-            return true;
+            return;
         }
-        return false;
+        return;
     }
 
 	/*function onBack(){

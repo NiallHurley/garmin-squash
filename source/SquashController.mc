@@ -1,6 +1,7 @@
 using Toybox.System;
 using Toybox.Application;
 using Toybox.WatchUi as Ui;
+using Toybox.Timer;
 
 class SquashController {
 
@@ -9,29 +10,38 @@ class SquashController {
     var mTimer;
     var mModel;
     var mRunning;
+    var mView;
 
     //! Constructor
     //! @param mModel Shared objtect that contains
     //!       the data that will be displayed on screen
-    function initialize() {
+    function initialize(view) {
     	mTimer = null;
     	mModel = Application.getApp().model;
+        mView = view;
     	mRunning = false;    	                    
         shouldSave = true;
+        return;
     }
     
     function start() {
         System.println("SC: start");
     	mModel.start();
     	mRunning = true;
+        if (mTimer != null) {
+            mTimer.stop();
+            mTimer = null;
+        }
     	mTimer = new Timer.Timer();
-    	mTimer.start(method(:onTimer), 1000, true);
+    	mTimer.start(mView.getOnTimer(), 1000, true);
+        return;
     }
     
     function stop(){
      	System.println("SC: stop");
     	mModel.stop();
     	mRunning = false;  
+        return;
     }
     
     // Save the ording
@@ -43,8 +53,18 @@ class SquashController {
         // and start a timer to allow all processing to finish
         WatchUi.pushView(new WatchUi.ProgressBar("Saving...", null), 
         	new SquashProgressDelegate(), WatchUi.SLIDE_DOWN);
+        if (mTimer != null) {
+            mTimer.stop();
+            mTimer = null;
+        }
         mTimer = new Timer.Timer();
-        mTimer.start(method(:onExit), 3000, false);
+        if (mView != null) {
+            var exitFn = method(:onExit);;
+            mTimer.start(exitFn, 3000, false);
+        } else {
+            System.println("SC: mView is null — can't call onExit");
+        }
+        return;
     }
     
     function discard() {
@@ -55,8 +75,18 @@ class SquashController {
         // and start a timer to allow all processing to finish
         WatchUi.pushView(new WatchUi.ProgressBar("Discarding...", null), 
         	new SquashProgressDelegate(), WatchUi.SLIDE_DOWN);
+        if (mTimer != null) {
+            mTimer.stop();
+            mTimer = null;
+        }
         mTimer = new Timer.Timer();
-        mTimer.start(method(:onExit), 3000, false);
+        if (mView != null) {
+            var exitFn = method(:onExit);
+            mTimer.start(exitFn, 3000, false);
+        } else {
+            System.println("SC: mView is null — can't call onExit");
+        }
+        return;
     }
 
     //! Function called when the menu button is pressed
@@ -64,7 +94,7 @@ class SquashController {
     //! the session
     function onMenu() {
         System.println("SquashDelegate onMenu");
-        return true;
+        return;
     }
     
     /*
@@ -86,10 +116,33 @@ class SquashController {
     }
     */
 
+    function onKey(keyEvent) {
+        var key = keyEvent.getKey();
+        var keyType = keyEvent.getType(); 
+        System.println("Key: " + key.toString() + ", keyType: " + keyType.toString());
+
+        if (key == Ui.KEY_ENTER || key == Ui.KEY_START) {
+            onStartStop();
+            return true;
+        } else if (key == Ui.KEY_UP) {
+            System.println("SC: UP key pressed");
+            // Optional: navigate up or handle UI event
+            return true;
+        } else if (key == Ui.KEY_DOWN) {
+            System.println("SC: DOWN key pressed");
+            // Optional: navigate down or handle UI event
+            return true;
+        } else if (key == Ui.KEY_ESC) {
+            onBack();
+            return true;
+        }
+        return false;
+    }
+
     //! Function called when the reset button of the UI is pressed.
     function onReset() {
     	System.println("SC: onReset");
-      return true;
+      return;
     }
 
 	// Are we running currently?
@@ -105,32 +158,43 @@ class SquashController {
             System.println("SC: onStartStop - stop");
             WatchUi.pushView(new Rez.Menus.MainMenu(), 
             	new SquashMenuDelegate(), WatchUi.SLIDE_UP);
+            return;
         } else {
         	System.println("SC: onStartStop - start");
             start();
+            return;
         }
     }
 
+    function onSelect() {
+        System.println("SC: onSelect");
+        onStartStop();
+        return true;
+    }
+
     //! Function called when user taps a touch screen.
-    //! Replacement of Button feature that does not exist
-    //! in sdk v1.3.1
+    //! Only runs on touchscreen-enabled devices.
     function onTap(evt) {
-    	return true;
+        var deviceSettings = System.getDeviceSettings();
+        if (deviceSettings.isTouchScreen && deviceSettings.inputButtons == 0) {
+            System.println("SC: tap - onStartStop called as device is touchscreen-only");
+            onStartStop();
+        } else {
+            System.println("SC: ignoring tap"); // Prefer physical buttons if available
+        }
+        return;
     }
 
     //! Event used when back button is pressed.
     //! It shows a confirmation dialig before quitting the App
     function onBack() {
         System.println("SC: onBack");
-        return true;
+        return;
     }    
        
-    function onTimer(){
-    	Ui.requestUpdate();
-    }
-    
-    function onExit(){
-    	System.println("SC: onExit");
-    	System.exit();
+    public function onExit() { 
+        System.println("SquashView: onExit called");
+        System.exit();
+        return;
     }
 }

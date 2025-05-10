@@ -10,27 +10,28 @@ class SquashConfirmationDelegate extends Ui.ConfirmationDelegate
 {
    hidden var mController;
 
-    // Hold onto the controller
+   // Hold onto the controller
    function initialize(controller) {
        ConfirmationDelegate.initialize();
        mController = controller;
        System.println("SConfDelegate: init");
-    }
+       return;
+   }
 
-    // Handle the confirmation dialog response
+   // Handle the confirmation dialog response
    function onResponse(response) {
-       if( response == WatchUi.CONFIRM_YES ) {
+       if (response == WatchUi.CONFIRM_YES) {
            mController.stop();
            mController.discard();
        }
-    }
+       return true;
+   }
 }
-
 
 //! Class that handles events coming from
 //! the Squash View
 // The SquashDelegate forwards the inputs to the
-// SquashController. 
+// SquashController.
 class SquashDelegate extends Ui.BehaviorDelegate {
 
     // Controller class
@@ -46,53 +47,51 @@ class SquashDelegate extends Ui.BehaviorDelegate {
 
     // Input handling of start/stop is mapped to onSelect
     function onSelect() {
-        // Pass the touchscreen input to the controller
-        //mController.onStartStop();
         System.println("SD: onSelect pressed");
+        mController.onStartStop();
         return true;
-	}
+    }
+
     // Block access to the menu button
     function onMenu() {
-        System.println("SD: Menu pressed");    
+        System.println("SD: Menu pressed");
         return true;
     }
-    
+
     function onKey(keyEvent) {
-       //! if a key is pressed - print to debug window
-        System.println("SD: Key pressed");
-        var key = null;
-        var keyType = null;
-        key = keyEvent.getKey();
-        keyType = keyEvent.getType();
-        System.println("SD: Key: " + key.toString() + ", keyType: " + keyType.toString());  // e.g. KEY_MENU = 7
-        
-        //! if key is the enter key (start/stop button)...
-        //!  ... if recording an activity, prompt for the user to exit
-        //!  ... else start the activity
-        if (key==Ui.KEY_ENTER){
-           System.println("SD: enter pressed");   
-     	   mController.onStartStop();
-        } else {
-           if (key == 8){
-           		System.println("SD: key8 pressed");   
-     	   		mController.onStartStop();		
-           }
+        var key = keyEvent.getKey();
+        var keyType = keyEvent.getType();
+        System.println("SD: Key: " + key.toString() + ", keyType: " + keyType.toString());
+
+        // Handle START/ENTER button
+        if (key == Ui.KEY_ENTER || key == Ui.KEY_START) {
+            System.println("SD: START/ENTER pressed");
+            mController.onStartStop();
+            return true;
+
+        // Handle UP button
+        } else if (key == Ui.KEY_UP) {
+            System.println("SD: UP key pressed");
+            return true;
+
+        // Handle DOWN button
+        } else if (key == Ui.KEY_DOWN) {
+            System.println("SD: DOWN key pressed");
+            return true;
+
+        // Handle BACK or LAP/RESET button
+        } else if (key == Ui.KEY_ESC || key == Ui.KEY_DOWN_RIGHT) {
+            System.println("SD: BACK key pressed");
+            onBack();
+            return true;
         }
-        
-        return true;
+
+        return false;
     }
-    
-     // Handle the back action
+
+    // Handle the back action
     function onBack() {
-       // If the timer is running, confirm they want to exit
-   /*    if(mController.isRunning()) {
-           WatchUi.pushView(new WatchUi.Confirmation("Are you sure?"),
-               new SquashConfirmationDelegate(mController), WatchUi.SLIDE_IMMEDIATE );
-           // Don't let the system handle the message!
-           return true;
-       }*/
-       // Pass the message through to the system
-       System.println("SD: onBack pressed");   
-       return true;
+        System.println("SD: onBack pressed");
+        return true;
     }
 }

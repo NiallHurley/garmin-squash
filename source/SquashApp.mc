@@ -2,6 +2,7 @@ using Toybox.System;
 using Toybox.Application as App;
 using Toybox.WatchUi as Ui;
 using Toybox.Sensor as Snsr;
+using Toybox.Lang as Lang;
 
 //! Class that represents the Squash Application
 class SquashApp extends App.AppBase {
@@ -15,7 +16,7 @@ class SquashApp extends App.AppBase {
     function initialize() {
         AppBase.initialize();
 		model = new SquashModel();        
-        controller = new SquashController();      
+        controller = new SquashController(null);
     } 
 
     //! onStart() is called on application start up

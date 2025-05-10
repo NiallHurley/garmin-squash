@@ -14,6 +14,7 @@ var heightButton = 0;
 var widthButton = 0;
 
 
+
 //! Class that represents the main Squash App
 //! View
 class SquashView extends Ui.View {
@@ -41,13 +42,14 @@ class SquashView extends Ui.View {
         View.initialize();
         // Get the model and controller from the Application
         mModel = Application.getApp().model;        
-        mController = Application.getApp().controller;
+        // mController = Application.getApp().controller;
+        Application.getApp().controller.initialize(self);
                 
-        mTimer = new Timer.Timer();
+        // mTimer = new Timer.Timer();
         heartRate = 0;
 
         Snsr.setEnabledSensors( [Snsr.SENSOR_HEARTRATE] );
-        Snsr.enableSensorEvents( method(:onSnsr) );
+        Snsr.enableSensorEvents( self.getOnSnsr());
     }
 
     //! Load resources
@@ -65,7 +67,15 @@ class SquashView extends Ui.View {
     //! the state of this View and prepare it to be shown. This includes
     //! loading resources into memory.
     function onShow() {
-    	mTimer.start(method(:onTimer), 1000, true);
+        if (mTimer != null) {
+            mTimer.stop();
+            mTimer = null;
+        }
+
+        mTimer = new Timer.Timer();
+        mTimer.start(getOnTimer(), 1000, true);
+
+        return;
     }
 
     //! Update the view
@@ -133,12 +143,17 @@ class SquashView extends Ui.View {
     // state of this View here. This includes freeing resources from
     // memory.
     function onHide() {
-        mTimer.stop();
+        if (mTimer != null) {
+            mTimer.stop();
+            mTimer = null;
+        }
+        return;
     }
 
     // Handler for the timer callback
     function onTimer() {
         Ui.requestUpdate();        
+        return;
     }
 
     //! Function called to read heart rate sensor value
@@ -153,5 +168,14 @@ class SquashView extends Ui.View {
             heartRate = "---";
         }
         Ui.requestUpdate();
+        return;
+    }
+
+    public function getOnTimer() {
+        return method(:onTimer);
+    }
+
+    public function getOnSnsr() {
+        return method(:onSnsr);
     }
 }

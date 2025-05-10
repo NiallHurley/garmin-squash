@@ -1,6 +1,8 @@
 using Toybox.WatchUi as Ui;
 using Toybox.ActivityRecording as Record;
 using Toybox.FitContributor as Fit;
+using Toybox.Activity;
+
 
 //! Class used to record an activity
 class ActivitySession {
@@ -50,8 +52,23 @@ class ActivitySession {
         if (session==null){
 	        if(Toybox has :ActivityRecording ) {
 	            if(!isRecording()) {
-	                   session = Record.createSession({:name=>"Squash", 
-	                                                   :sport=>Record.SPORT_TENNIS});
+                    System.println("Checking SUB_SPORT_SQUASH support...");
+                    if (Activity has :SUB_SPORT_SQUASH) {
+                        System.println("Using Squash subSport");
+                        session = Record.createSession({
+                            :name => "Squash",
+                            :sport => Activity.SPORT_RACKET,
+                            :subSport => Activity.SUB_SPORT_SQUASH
+                        });
+                    } else {
+                        System.println("Falling back to Tennis + Generic");
+                        session = Record.createSession({
+                            :name => "Squash",
+                            :sport => Activity.SPORT_TENNIS,
+                            :subSport => Activity.SUB_SPORT_GENERIC
+                        });
+                    }
+                        
 	                System.println("Session Created");
 	                sessionStarted = Time.now(); 	                
 	                mStepsFieldCurrent = session.createField("CurrentSteps", CURRENTSTEPS_FIELD_ID, Fit.DATA_TYPE_UINT32, { :mesgType=>Fit.MESG_TYPE_RECORD, :units=>"steps" });

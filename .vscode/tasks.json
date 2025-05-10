@@ -1,0 +1,39 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+      {
+        "label": "Build Garmin App (fenix6pro)",
+        "type": "shell",
+        "command": "/Users/nhur/Library/Application Support/Garmin/ConnectIQ/Sdks/connectiq-sdk-mac-8.1.1-2025-03-27-66dae750f/bin/monkeyc",
+        "args": [
+          "-o", "${workspaceFolder}/build/garminsquash.prg",
+          "-f", "${workspaceFolder}/monkey.jungle",
+          "-y", "${workspaceFolder}/developer_key",
+          "-d", "fenix6pro"
+        ],
+        "group": {
+          "kind": "build",
+          "isDefault": true
+        }
+      },
+      {
+        "label": "Run Garmin App (fenix6pro)",
+        "type": "shell",
+        "command": "/Users/nhur/Library/Application Support/Garmin/ConnectIQ/Sdks/connectiq-sdk-mac-8.1.1-2025-03-27-66dae750f/bin/monkeydo",
+        "args": [
+          "${workspaceFolder}/build/garminsquash.prg",
+          "fenix6pro"
+        ],
+        "group": "test"
+      },
+      {
+        "label": "Build and Run Garmin App (fenix6pro)",
+        "dependsOn": [
+          "Build Garmin App (fenix6pro)",
+          "Run Garmin App (fenix6pro)"
+        ],
+        "dependsOrder": "sequence",
+        "group": "build"
+      }
+    ]
+  }
