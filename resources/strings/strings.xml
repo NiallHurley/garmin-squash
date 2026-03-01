@@ -13,5 +13,7 @@
 	<string id="steps_graph_label">Steps</string>
 	<string id="fitStepsDistance_label">Distance based on steps</string>        
 	<string id="fitStepsDistance_units">m</string>        
-	<string id="fitStepsDistance_graph_label">Distance based on steps</string>	
+	<string id="fitStepsDistance_graph_label">Distance based on steps</string>
+	<string id="fitSessionType_label">Session type code</string>
+	<string id="fitSessionType_units">code</string>
 </strings>

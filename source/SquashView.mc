@@ -89,6 +89,7 @@ class SquashView extends Ui.View {
         }
         var time = mModel.getSession().getElapsedTime();
         var clockTime = System.getClockTime(); // ClockTime object
+        var isRoundScreen = (System.getDeviceSettings().screenShape == System.SCREEN_SHAPE_ROUND);
 
         var x = dc.getWidth() / 2 - HORIZONTAL_SPACING;
         var y = initialY;
@@ -114,8 +115,14 @@ class SquashView extends Ui.View {
         dc.drawText(x, y, Gfx.FONT_TINY, Ui.loadResource(Rez.Strings.calories_label), Gfx.TEXT_JUSTIFY_LEFT);
 
         y = y + dc.getFontHeight(Gfx.FONT_TINY) + VERTICAL_SPACING;
-        x = dc.getWidth() / 2 - HORIZONTAL_SPACING;
-        dc.drawText(x, y, Gfx.FONT_NUMBER_MILD, time, Gfx.TEXT_JUSTIFY_RIGHT);
+        // On round displays, the left time value can clip at the edge when using wide number fonts.
+        if (isRoundScreen) {
+            x = (dc.getWidth() / 4) + 10;
+            dc.drawText(x, y, Gfx.FONT_SMALL, time, Gfx.TEXT_JUSTIFY_CENTER);
+        } else {
+            x = dc.getWidth() / 2 - HORIZONTAL_SPACING;
+            dc.drawText(x, y, Gfx.FONT_NUMBER_MILD, time, Gfx.TEXT_JUSTIFY_RIGHT);
+        }
 
         x = dc.getWidth() / 2 + HORIZONTAL_SPACING;
         dc.drawText(x, y, Gfx.FONT_NUMBER_MILD, mModel.getNumberOfCalories(), Gfx.TEXT_JUSTIFY_LEFT);
@@ -130,7 +137,10 @@ class SquashView extends Ui.View {
         dc.drawLine(x, VERTICAL_SPACING, x, (2*dc.getHeight()/3)+(VERTICAL_SPACING / 2)  );
         
          y = y + VERTICAL_SPACING;
-        x = (dc.getWidth()/2) ;//HORIZONTAL_SPACING;
+        x = (dc.getWidth()/2);
+        if (isRoundScreen) {
+            x = x + 4;
+        }
         dc.setColor(Gfx.COLOR_LT_GRAY,Gfx.COLOR_BLACK);
         dc.drawText(x, y, Gfx.FONT_SMALL, clockTime.hour.format("%02d") + ":" +
 		    clockTime.min.format("%02d") + ":" +

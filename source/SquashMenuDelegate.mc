@@ -75,7 +75,6 @@ class SquashMenuDelegate extends Ui.MenuInputDelegate {
             mController.discard();
             return;
         }
-        return;
     }
 
 	/*function onBack(){

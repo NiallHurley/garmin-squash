@@ -15,11 +15,16 @@ class ActivitySession {
 	const CURRENTSTEPS_FIELD_ID = 1;
 	const TOTALSTEPS_FIELD_ID = 2;	
 	const CURRENTSTEPDIST_FIELD_ID = 3;
-	const TOTALSTEPDIST_FIELD_ID = 4;	
+	const TOTALSTEPDIST_FIELD_ID = 4;
+	const SESSIONTYPE_FIELD_ID = 5;
+	const SESSIONTYPE_SQUASH = 1; 
+	const SESSIONTYPE_FALLBACK_GENERIC = 3;
 	hidden var mStepsFieldCurrent;
 	hidden var mStepsFieldTotal;
 	hidden var mStepDistFieldCurrent;
 	hidden var mStepDistFieldTotal;
+	hidden var mSessionTypeFieldTotal;
+	hidden var mSessionTypeCode;
 	hidden var mModel;
 	
 
@@ -27,6 +32,7 @@ class ActivitySession {
     function initialize() {
         session = null;        
         mModel = Application.getApp().model;
+        mSessionTypeCode = SESSIONTYPE_FALLBACK_GENERIC;
     }
     
     function getModel(){
@@ -52,34 +58,54 @@ class ActivitySession {
         if (session==null){
 	        if(Toybox has :ActivityRecording ) {
 	            if(!isRecording()) {
-                    System.println("Checking SUB_SPORT_SQUASH support...");
-                    if (Activity has :SUB_SPORT_SQUASH) {
-                        System.println("Using Squash subSport");
+                    var supportsRacketSquash = (Activity has :SPORT_RACKET) && (Activity has :SUB_SPORT_SQUASH);
+
+                    System.println("supportsRacketSquash=" + supportsRacketSquash.toString());
+                    mSessionTypeCode = SESSIONTYPE_FALLBACK_GENERIC;
+
+                    if (supportsRacketSquash) {
+                        try {
+                            System.println("Attempting session with SPORT_RACKET + SUB_SPORT_SQUASH");
+                            session = Record.createSession({
+                                :name => "Squash",
+                                :sport => Activity.SPORT_RACKET,
+                                :subSport => Activity.SUB_SPORT_SQUASH
+                            });
+                            mSessionTypeCode = SESSIONTYPE_SQUASH;
+                            System.println("Using Squash activity typing");
+                        } catch(e) {
+                            System.println("Racket/Squash session creation failed; using fallback typing. Error=" + e.toString());
+                        }
+                    }
+
+                    if (session == null) {
+                        System.println("Using generic fallback session typing");
                         session = Record.createSession({
                             :name => "Squash",
-                            :sport => Activity.SPORT_RACKET,
-                            :subSport => Activity.SUB_SPORT_SQUASH
-                        });
-                    } else {
-                        System.println("Falling back to Tennis + Generic");
-                        session = Record.createSession({
-                            :name => "Squash",
-                            :sport => Activity.SPORT_TENNIS,
+                            :sport => Activity.SPORT_GENERIC,
                             :subSport => Activity.SUB_SPORT_GENERIC
                         });
+                        mSessionTypeCode = SESSIONTYPE_FALLBACK_GENERIC;
                     }
                         
 	                System.println("Session Created");
+                    System.println("SessionTypeCode=" + mSessionTypeCode.toString());
 	                sessionStarted = Time.now(); 	                
 	                mStepsFieldCurrent = session.createField("CurrentSteps", CURRENTSTEPS_FIELD_ID, Fit.DATA_TYPE_UINT32, { :mesgType=>Fit.MESG_TYPE_RECORD, :units=>"steps" });
 	                mStepsFieldTotal = session.createField("TotalSteps", TOTALSTEPS_FIELD_ID, Fit.DATA_TYPE_UINT32, { :mesgType=>Fit.MESG_TYPE_SESSION, :units=>"steps" });
 	                mStepDistFieldCurrent = session.createField("CurrentStepDist", CURRENTSTEPDIST_FIELD_ID, Fit.DATA_TYPE_UINT32, { :mesgType=>Fit.MESG_TYPE_RECORD, :units=>"steps" });
 	                mStepDistFieldTotal = session.createField("TotalStepDist", TOTALSTEPDIST_FIELD_ID, Fit.DATA_TYPE_UINT32, { :mesgType=>Fit.MESG_TYPE_SESSION, :units=>"steps" });
+                    mSessionTypeFieldTotal = session.createField("SessionType", SESSIONTYPE_FIELD_ID, Fit.DATA_TYPE_UINT32, { :mesgType=>Fit.MESG_TYPE_SESSION, :units=>"code" });
+                    mSessionTypeFieldTotal.setData(mSessionTypeCode);
 	            }
 	        }	        
 	    }
-	    session.start();		
-		vibrate();
+	    if (session != null) {
+	        session.start();
+		    vibrate();
+	    } else {
+            System.println("Session start skipped: session is null");
+        }
     }
 
     //! Stops the current session
@@ -118,6 +144,9 @@ class ActivitySession {
        System.println(numStepsToSave.toString());              
        mStepsFieldTotal.setData(numStepsToSave);
        mStepDistFieldTotal.setData(numStepsToSave*mModel.stepLength);
+       if (mSessionTypeFieldTotal != null){
+           mSessionTypeFieldTotal.setData(mSessionTypeCode);
+       }
        session.save();
        System.println("Session saved.");
        endSession();        

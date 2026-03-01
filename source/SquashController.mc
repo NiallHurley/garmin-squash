@@ -192,9 +192,12 @@ class SquashController {
         return;
     }    
        
-    public function onExit() { 
+    public function onExit() as Void { 
         System.println("SquashView: onExit called");
+        if (mTimer != null) {
+            mTimer.stop();
+            mTimer = null;
+        }
         System.exit();
-        return;
     }
 }

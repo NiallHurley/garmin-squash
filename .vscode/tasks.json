@@ -1,39 +1,53 @@
 {
-    "version": "2.0.0",
-    "tasks": [
-      {
-        "label": "Build Garmin App (fenix6pro)",
-        "type": "shell",
-        "command": "/Users/nhur/Library/Application Support/Garmin/ConnectIQ/Sdks/connectiq-sdk-mac-8.1.1-2025-03-27-66dae750f/bin/monkeyc",
-        "args": [
-          "-o", "${workspaceFolder}/build/garminsquash.prg",
-          "-f", "${workspaceFolder}/monkey.jungle",
-          "-y", "${workspaceFolder}/developer_key",
-          "-d", "fenix6pro"
-        ],
-        "group": {
-          "kind": "build",
-          "isDefault": true
-        }
-      },
-      {
-        "label": "Run Garmin App (fenix6pro)",
-        "type": "shell",
-        "command": "/Users/nhur/Library/Application Support/Garmin/ConnectIQ/Sdks/connectiq-sdk-mac-8.1.1-2025-03-27-66dae750f/bin/monkeydo",
-        "args": [
-          "${workspaceFolder}/build/garminsquash.prg",
-          "fenix6pro"
-        ],
-        "group": "test"
-      },
-      {
-        "label": "Build and Run Garmin App (fenix6pro)",
-        "dependsOn": [
-          "Build Garmin App (fenix6pro)",
-          "Run Garmin App (fenix6pro)"
-        ],
-        "dependsOrder": "sequence",
-        "group": "build"
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "Build Garmin App (fenix6pro_sim)",
+      "type": "shell",
+      "command": "/Users/nhur/Library/Application Support/Garmin/ConnectIQ/Sdks/connectiq-sdk-mac-8.4.1-2026-02-03-e9f77eeaa/bin/monkeyc",
+      "args": [
+        "-o",
+        "${workspaceFolder}/bin/garminsquash.prg",
+        "-f",
+        "${workspaceFolder}/monkey.jungle",
+        "-y",
+        "${workspaceFolder}/developer_key",
+        "-d",
+        "fenix6pro_sim",
+        "-w"
+      ]
+    },
+    {
+      "label": "Start Garmin Simulator",
+      "type": "shell",
+      "command": "/bin/zsh",
+      "args": [
+        "-lc",
+        "nohup \"/Users/nhur/Library/Application Support/Garmin/ConnectIQ/Sdks/connectiq-sdk-mac-8.4.1-2026-02-03-e9f77eeaa/bin/ConnectIQ.app/Contents/MacOS/simulator\" >/tmp/connectiq-sim.log 2>&1 &"
+      ]
+    },
+    {
+      "label": "Run Garmin App (fenix6pro)",
+      "type": "shell",
+      "command": "/bin/zsh",
+      "args": [
+        "-lc",
+        "for i in {1..20}; do \"/Users/nhur/Library/Application Support/Garmin/ConnectIQ/Sdks/connectiq-sdk-mac-8.4.1-2026-02-03-e9f77eeaa/bin/monkeydo\" \"${workspaceFolder}/bin/garminsquash.prg\" fenix6pro && exit 0; sleep 1; done; echo \"Unable to connect to simulator after retries.\"; exit 2"
+      ],
+      "group": "test"
+    },
+    {
+      "label": "Build and Run Garmin App (fenix6pro)",
+      "dependsOn": [
+        "Build Garmin App (fenix6pro_sim)",
+        "Start Garmin Simulator",
+        "Run Garmin App (fenix6pro)"
+      ],
+      "dependsOrder": "sequence",
+      "group": {
+        "kind": "build",
+        "isDefault": true
       }
-    ]
-  }
+    }
+  ]
+}

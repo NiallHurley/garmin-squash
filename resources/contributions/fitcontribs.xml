@@ -9,4 +9,6 @@
     unitLabel="@Strings.fitStepsDistance_units" fillColor="#FF0000" />
  <fitField id="4" displayInActivitySummary="true" sortOrder = "3" precision="-1"
     dataLabel="@Strings.fitStepsDistance_label" unitLabel="@Strings.fitStepsDistance_units"  />         
+ <fitField id="5" displayInActivitySummary="true" sortOrder = "4" precision="0"
+    dataLabel="@Strings.fitSessionType_label" unitLabel="@Strings.fitSessionType_units"  />
 </fitContributions>
