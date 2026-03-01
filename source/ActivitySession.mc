@@ -17,7 +17,7 @@ class ActivitySession {
 	const CURRENTSTEPDIST_FIELD_ID = 3;
 	const TOTALSTEPDIST_FIELD_ID = 4;
 	const SESSIONTYPE_FIELD_ID = 5;
-	const SESSIONTYPE_SQUASH = 1; 
+	const SESSIONTYPE_SQUASH = 1;  
 	const SESSIONTYPE_FALLBACK_GENERIC = 3;
 	hidden var mStepsFieldCurrent;
 	hidden var mStepsFieldTotal;
